@@ -3,13 +3,45 @@ import axios from "axios";
 const API_URL =
   import.meta.env.VITE_API_URL || "https://backend-blog-snowy.vercel.app/api";
 
+console.log("🔧 API_URL:", API_URL);
+
 // API 인스턴스 생성
 const api = axios.create({
   baseURL: API_URL,
+  timeout: 30000, // 30초 타임아웃
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+// 요청 인터셉터
+api.interceptors.request.use(
+  (config) => {
+    console.log("🔵 API 요청:", config.method.toUpperCase(), config.url, config.data);
+    return config;
+  },
+  (error) => {
+    console.error("❌ 요청 에러:", error);
+    return Promise.reject(error);
+  }
+);
+
+// 응답 인터셉터
+api.interceptors.response.use(
+  (response) => {
+    console.log("✅ API 응답:", response.status, response.data);
+    return response;
+  },
+  (error) => {
+    console.error("❌ API 에러:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      url: error.config?.url,
+    });
+    return Promise.reject(error);
+  }
+);
 
 // 회원가입
 export const signup = async (userData) => {
@@ -43,53 +75,6 @@ export const getCurrentUser = async () => {
   if (!token) return null;
 
   const response = await api.get("/auth/me", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-};
-
-// ========== 게시물 API ==========
-
-// 모든 게시물 조회
-export const getPosts = async () => {
-  const response = await api.get("/posts");
-  return response.data;
-};
-
-// 특정 게시물 조회
-export const getPost = async (id) => {
-  const response = await api.get(`/posts/${id}`);
-  return response.data;
-};
-
-// 게시물 작성
-export const createPost = async (postData) => {
-  const token = localStorage.getItem("token");
-  const response = await api.post("/posts", postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-};
-
-// 게시물 수정
-export const updatePost = async (id, postData) => {
-  const token = localStorage.getItem("token");
-  const response = await api.put(`/posts/${id}`, postData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-};
-
-// 게시물 삭제
-export const deletePost = async (id) => {
-  const token = localStorage.getItem("token");
-  const response = await api.delete(`/posts/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -8,24 +8,24 @@ const User = require("../models/User");
 const authenticateUser = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    
+
     if (!token) {
       return res.status(401).json({
         success: false,
         message: "로그인이 필요합니다",
       });
     }
-    
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
-    
+
     if (!user) {
       return res.status(401).json({
         success: false,
         message: "사용자를 찾을 수 없습니다",
       });
     }
-    
+
     req.user = user;
     next();
   } catch (error) {
@@ -55,7 +55,7 @@ router.post("/", authenticateUser, async (req, res) => {
     const post = await Post.create({
       title,
       content,
-      author: req.user._id,  // 로그인한 사용자 ID
+      author: req.user._id, // 로그인한 사용자 ID
     });
 
     // 작성자 정보 포함해서 응답
@@ -87,8 +87,8 @@ router.post("/", authenticateUser, async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate("author", "name email")  // 작성자 정보 포함
-      .sort({ createdAt: -1 });          // 최신순 정렬
+      .populate("author", "name email") // 작성자 정보 포함
+      .sort({ createdAt: -1 }); // 최신순 정렬
 
     res.json({
       success: true,

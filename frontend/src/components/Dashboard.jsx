@@ -552,8 +552,9 @@ vercel logs [URL]         # 배포 로그 확인`}
             </h4>
             <div className="bg-yellow-50 p-3 rounded mb-3">
               <p className="text-sm text-gray-700">
-                사용자 브라우저가 <strong>이전 버전의 JS/CSS 파일을 캐시</strong>하고 있어서 
-                새로 배포해도 변경사항이 안 보일 수 있습니다.
+                사용자 브라우저가{" "}
+                <strong>이전 버전의 JS/CSS 파일을 캐시</strong>하고 있어서 새로
+                배포해도 변경사항이 안 보일 수 있습니다.
               </p>
             </div>
 
@@ -605,7 +606,8 @@ style-def456.css
                 <strong>• index.html:</strong> 캐시 안 함 → 항상 최신 버전 체크
               </p>
               <p>
-                <strong>• /assets/ (JS/CSS):</strong> 1년 캐시 + 불변 → 해시로 버전 관리
+                <strong>• /assets/ (JS/CSS):</strong> 1년 캐시 + 불변 → 해시로
+                버전 관리
               </p>
             </div>
 
@@ -617,9 +619,15 @@ style-def456.css
                 임시 해결 방법 (사용자 안내):
               </p>
               <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
-                <li><strong>Shift + F5</strong>: 강제 새로고침 (캐시 무시)</li>
-                <li><strong>Ctrl + Shift + Delete</strong>: 브라우저 캐시 삭제</li>
-                <li><strong>시크릿/프라이빗 모드</strong>로 접속</li>
+                <li>
+                  <strong>Shift + F5</strong>: 강제 새로고침 (캐시 무시)
+                </li>
+                <li>
+                  <strong>Ctrl + Shift + Delete</strong>: 브라우저 캐시 삭제
+                </li>
+                <li>
+                  <strong>시크릿/프라이빗 모드</strong>로 접속
+                </li>
               </ul>
               <p className="text-xs text-gray-600 mt-2">
                 💡 위 설정을 적용하면 대부분 자동 해결됩니다!

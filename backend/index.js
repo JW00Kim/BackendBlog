@@ -6,8 +6,19 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());  // 모든 도메인 허용 (테스트용)
+// Middleware - CORS 설정
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174", 
+      "https://jiwooresume.vercel.app",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
 // MongoDB 연결

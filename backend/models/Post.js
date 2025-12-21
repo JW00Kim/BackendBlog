@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema({
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",  // User 모델 참조
+    ref: "User", // User 모델 참조
     required: [true, "작성자가 필요합니다"],
   },
   createdAt: {
