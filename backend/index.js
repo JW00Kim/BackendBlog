@@ -7,30 +7,26 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware - CORS 설정
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174", 
-      "https://jiwooresume.vercel.app",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    maxAge: 86400, // 24시간 preflight 캐싱
-  })
-);
-
-// OPTIONS 요청 즉시 응답
-app.options("*", cors());
+app.use(cors()); // 모든 origin 허용으로 단순화
 
 app.use(express.json());
 
-// MongoDB 연결
+// MongoDB 연결 캐싱 (Vercel Serverless에서 재사용)
+let isConnected = false;
+
 const connectDB = async () => {
+  if (isConnected) {
+    console.log("✅ MongoDB 이미 연결됨 (캐시 사용)");
+    return;
+  }
+
   try {
     if (process.env.MONGODB_URI) {
-      await mongoose.connect(process.env.MONGODB_URI);
+      await mongoose.connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000, // 5초 timeout
+        socketTimeoutMS: 10000, // 10초 timeout
+      });
+      isConnected = true;
       console.log("✅ MongoDB 연결 성공");
     } else {
       console.log(
