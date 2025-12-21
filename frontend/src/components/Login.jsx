@@ -21,7 +21,7 @@ function Login() {
       const result = await login(formData);
       if (result.success) {
         setMessage(result.message);
-        onSuccess(result.data.user);
+        navigate("/dashboard");
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "로그인 실패");

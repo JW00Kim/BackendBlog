@@ -25,7 +25,7 @@ function Signup() {
       const result = await signup(formData);
       if (result.success) {
         setMessage(result.message);
-        onSuccess(result.data.user);
+        navigate("/dashboard");
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "회원가입 실패");
