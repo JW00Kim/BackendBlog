@@ -163,19 +163,112 @@ vercel --prod`}
             </p>
           </div>
 
+          <div className="bg-white rounded-lg p-4 mb-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">🔄 지속적 배포 (CI/CD)</h3>
+            
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">📂 저장소 구조</h4>
+            <div className="bg-blue-50 p-3 rounded mb-3">
+              <p className="text-sm text-gray-700 font-mono">
+                <strong>하나의 Git 저장소</strong> (Monorepo)
+              </p>
+              <pre className="text-xs mt-2 text-gray-700">
+{`BackendBlog/
+├── backend/      → Vercel 프로젝트: backend-blog
+└── frontend/     → Vercel 프로젝트: jiwooresume`}
+              </pre>
+              <p className="text-xs text-gray-600 mt-2">
+                💡 하나의 Git 저장소에 두 개의 Vercel 프로젝트가 연결되어 있습니다
+              </p>
+            </div>
+
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">🔗 Vercel과 GitHub 연결</h4>
+            <div className="text-sm text-gray-700 space-y-2 mb-3">
+              <p><strong>1. 백엔드:</strong> GitHub 저장소의 <code className="bg-gray-200 px-1 rounded">backend/</code> 폴더 감지</p>
+              <p><strong>2. 프론트엔드:</strong> GitHub 저장소의 <code className="bg-gray-200 px-1 rounded">frontend/</code> 폴더 감지</p>
+              <p className="text-blue-600">✨ Git Push하면 Vercel이 자동으로 두 프로젝트를 각각 배포합니다!</p>
+            </div>
+
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">🚀 지속적 배포 방법</h4>
+            
+            <p className="text-sm font-semibold text-gray-700 mb-2">방법 1: Git Push로 자동 배포 (추천 ⭐)</p>
+            <pre className="bg-gray-800 text-green-400 p-3 rounded overflow-x-auto text-xs mb-3">
+{`# 1. 코드 수정 후
+git add .
+git commit -m "Add new feature"
+git push
+
+# 2. Vercel이 자동으로 감지하여 배포
+# - backend/ 변경 → backend-blog 자동 배포
+# - frontend/ 변경 → jiwooresume 자동 배포
+# - 둘 다 변경 → 둘 다 자동 배포`}
+            </pre>
+
+            <p className="text-sm font-semibold text-gray-700 mb-2">방법 2: Vercel CLI로 수동 배포</p>
+            <pre className="bg-gray-800 text-green-400 p-3 rounded overflow-x-auto text-xs mb-3">
+{`# 백엔드만 배포
+cd backend
+vercel --prod
+
+# 프론트엔드만 배포
+cd frontend
+vercel --prod
+
+# 또는 개발 배포
+vercel  # preview 배포 (테스트용)`}
+            </pre>
+
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">📋 배포 워크플로우</h4>
+            <div className="bg-yellow-50 p-3 rounded text-sm">
+              <p className="font-semibold text-gray-800 mb-2">실제 작업 순서:</p>
+              <ol className="list-decimal list-inside space-y-1 text-gray-700">
+                <li>로컬에서 코드 수정</li>
+                <li><code className="bg-gray-200 px-1 rounded">npm run dev</code>로 로컬 테스트</li>
+                <li><code className="bg-gray-200 px-1 rounded">git add . && git commit -m "message"</code></li>
+                <li><code className="bg-gray-200 px-1 rounded">git push</code></li>
+                <li>⏳ Vercel이 자동으로 빌드 & 배포 (1-2분)</li>
+                <li>✅ 배포 완료 알림 (이메일 또는 Vercel 대시보드)</li>
+              </ol>
+            </div>
+
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">🔍 배포 확인</h4>
+            <pre className="bg-gray-800 text-green-400 p-3 rounded overflow-x-auto text-xs">
+{`# Vercel 대시보드에서 확인
+https://vercel.com/dashboard
+
+# 또는 CLI로 확인
+vercel ls  # 프로젝트 목록
+vercel inspect [URL]  # 배포 상세 정보`}
+            </pre>
+          </div>
+
           <div className="bg-white rounded-lg p-4">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">🎯 핵심 명령어</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">🎯 핵심 명령어 요약</h3>
             <pre className="bg-gray-800 text-green-400 p-3 rounded overflow-x-auto text-xs">
 {`# 개발
-npm run dev
+npm run dev               # 로컬 서버 실행
 
-# 배포
-vercel          # 개발 배포
-vercel --prod   # 프로덕션 배포
+# Git 배포 (자동 CI/CD)
+git add .
+git commit -m "message"
+git push                  # ← 이것만으로 자동 배포!
+
+# 수동 배포
+vercel                    # Preview 배포
+vercel --prod             # Production 배포
 
 # 환경 변수
-vercel env add KEY production`}
+vercel env add KEY production
+vercel env ls             # 환경 변수 목록
+
+# 배포 관리
+vercel ls                 # 프로젝트 목록
+vercel logs [URL]         # 배포 로그 확인`}
             </pre>
+
+            <div className="mt-3 p-3 bg-green-50 rounded">
+              <p className="text-sm font-semibold text-green-800">💡 팁:</p>
+              <p className="text-xs text-green-700">Git Push만 하면 Vercel이 알아서 배포합니다. 별도의 설정이나 스크립트 없이도 자동 CI/CD가 작동합니다!</p>
+            </div>
           </div>
         </div>
       )}
