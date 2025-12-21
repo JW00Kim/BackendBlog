@@ -18,13 +18,23 @@ function Login() {
     setMessage("");
 
     try {
+      console.log("로그인 시도:", formData.email);
       const result = await login(formData);
+      console.log("로그인 응답:", result);
+      
       if (result.success) {
         setMessage(result.message);
         navigate("/dashboard");
+      } else {
+        setMessage(result.message || "로그인 실패");
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || "로그인 실패");
+      console.error("로그인 에러:", error);
+      setMessage(
+        error.response?.data?.message || 
+        error.message || 
+        "서버와 통신할 수 없습니다"
+      );
     } finally {
       setLoading(false);
     }

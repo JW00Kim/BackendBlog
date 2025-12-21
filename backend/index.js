@@ -7,25 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "https://jiwooresume.vercel.app",
-        "https://backend-blog-snowy.vercel.app",
-      ];
-      if (!origin) return callback(null, true); // Postman 등 서버 간 요청 허용
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      // 허용되지 않은 도메인
-      callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+app.use(cors());  // 모든 도메인 허용 (테스트용)
 app.use(express.json());
 
 // MongoDB 연결
