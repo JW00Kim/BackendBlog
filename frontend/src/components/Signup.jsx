@@ -1,9 +1,13 @@
-import { useState } from 'react';
-import { signup } from '../api';
+import { useState } from "react";
+import { signup } from "../api";
 
 function Signup({ onSuccess, onSwitchToLogin }) {
-  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
-  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",
+  });
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -13,7 +17,7 @@ function Signup({ onSuccess, onSwitchToLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setMessage("");
 
     try {
       const result = await signup(formData);
@@ -22,7 +26,7 @@ function Signup({ onSuccess, onSwitchToLogin }) {
         onSuccess(result.data.user);
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || '회원가입 실패');
+      setMessage(error.response?.data?.message || "회원가입 실패");
     } finally {
       setLoading(false);
     }
@@ -33,25 +37,23 @@ function Signup({ onSuccess, onSwitchToLogin }) {
       <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">
         회원가입
       </h1>
-      <p className="text-gray-500 text-center mb-8">
-        새로운 계정을 만드세요
-      </p>
+      <p className="text-gray-500 text-center mb-8">새로운 계정을 만드세요</p>
 
       {message && (
-        <div className={`mb-4 p-3 rounded-lg ${
-          message.includes('완료') 
-            ? 'bg-green-100 text-green-700' 
-            : 'bg-red-100 text-red-700'
-        }`}>
+        <div
+          className={`mb-4 p-3 rounded-lg ${
+            message.includes("완료")
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
           {message}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">
-            이름
-          </label>
+          <label className="block text-gray-700 font-semibold mb-2">이름</label>
           <input
             type="text"
             name="name"
@@ -97,7 +99,7 @@ function Signup({ onSuccess, onSwitchToLogin }) {
           disabled={loading}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200 disabled:bg-gray-400"
         >
-          {loading ? '처리중...' : '회원가입'}
+          {loading ? "처리중..." : "회원가입"}
         </button>
       </form>
 

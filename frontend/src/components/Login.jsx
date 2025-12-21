@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { login } from '../api';
+import { useState } from "react";
+import { login } from "../api";
 
 function Login({ onSuccess, onSwitchToSignup }) {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -13,7 +13,7 @@ function Login({ onSuccess, onSwitchToSignup }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setMessage("");
 
     try {
       const result = await login(formData);
@@ -22,7 +22,7 @@ function Login({ onSuccess, onSwitchToSignup }) {
         onSuccess(result.data.user);
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || '로그인 실패');
+      setMessage(error.response?.data?.message || "로그인 실패");
     } finally {
       setLoading(false);
     }
@@ -38,11 +38,13 @@ function Login({ onSuccess, onSwitchToSignup }) {
       </p>
 
       {message && (
-        <div className={`mb-4 p-3 rounded-lg ${
-          message.includes('성공') 
-            ? 'bg-green-100 text-green-700' 
-            : 'bg-red-100 text-red-700'
-        }`}>
+        <div
+          className={`mb-4 p-3 rounded-lg ${
+            message.includes("성공")
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
           {message}
         </div>
       )}
@@ -82,7 +84,7 @@ function Login({ onSuccess, onSwitchToSignup }) {
           disabled={loading}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200 disabled:bg-gray-400"
         >
-          {loading ? '처리중...' : '로그인'}
+          {loading ? "처리중..." : "로그인"}
         </button>
       </form>
 
@@ -98,9 +100,9 @@ function Login({ onSuccess, onSwitchToSignup }) {
       <div className="mt-8 pt-6 border-t border-gray-200">
         <p className="text-sm text-gray-500 text-center">
           🚀 Backend API: <br />
-          <a 
-            href="https://backend-blog-snowy.vercel.app/api" 
-            target="_blank" 
+          <a
+            href="https://backend-blog-snowy.vercel.app/api"
+            target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 hover:underline"
           >
