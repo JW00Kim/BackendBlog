@@ -12,14 +12,18 @@ app.use(
     origin: (origin, callback) => {
       const allowedOrigins = [
         "http://localhost:3000",
-        "https://your-frontend-domain.com",
+        "http://localhost:5173",
+        "https://jiwooresume.vercel.app",
         "https://backend-blog-snowy.vercel.app",
       ];
       if (!origin) return callback(null, true); // Postman 등 서버 간 요청 허용
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
+      // 허용되지 않은 도메인
+      callback(new Error("Not allowed by CORS"));
     },
+    credentials: true,
   })
 );
 app.use(express.json());
