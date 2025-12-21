@@ -6,8 +6,16 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware - CORS 설정
-app.use(cors()); // 모든 origin 허용으로 단순화
+// Middleware - CORS 설정 (모든 요청에 대해)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false
+}));
+
+// Preflight 요청 처리
+app.options('*', cors());
 
 app.use(express.json());
 
