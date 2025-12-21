@@ -10,14 +10,16 @@ function Resume() {
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 shadow-lg">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0">
           <div className="w-full sm:w-auto">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{user.name}</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
+              김지우
+            </h1>
             <p className="text-blue-100 text-base sm:text-lg mb-3 sm:mb-4">
               Full Stack Developer/IT 관리자
             </p>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs sm:text-sm">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📧</span>
-                <span>{user.email}</span>
+                <span>jiwoo.kim2@wsu.edu</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📱</span>
@@ -153,7 +155,7 @@ function Resume() {
               ✨ 소개
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              안녕하세요! Full Stack 개발자 <strong>{user.name}</strong>
+              안녕하세요! Full Stack 개발자 <strong>김지우</strong>
               입니다. React, Node.js, MongoDB를 활용한 웹 애플리케이션 개발에
               열정을 가지고 있으며, 사용자 경험을 최우선으로 하는 서비스를
               만들고자 노력합니다. 최신 기술 트렌드를 빠르게 습득하고 실무에
@@ -310,9 +312,9 @@ function Resume() {
               <div className="absolute -left-2 top-0 w-4 h-4 bg-yellow-500 rounded-full"></div>
               <div className="mb-3 flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
                 <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden shadow-lg bg-white">
-                  <img 
-                    src="/logo.png" 
-                    alt="WSU Logo" 
+                  <img
+                    src="/logo.png"
+                    alt="WSU Logo"
                     className="w-full h-full object-contain"
                   />
                 </div>
@@ -325,7 +327,9 @@ function Resume() {
                       2018.08 - 2022.05
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-600 mb-1">컴퓨터공학과 학사</p>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1">
+                    컴퓨터공학과 학사
+                  </p>
                   <p className="text-xs sm:text-sm text-gray-700">
                     학점: 3.9 / 4.0 | 졸업 논문: "웹 성능 최적화 기법 연구"
                   </p>
