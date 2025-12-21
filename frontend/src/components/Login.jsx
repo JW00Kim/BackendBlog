@@ -35,9 +35,6 @@ function Login() {
       <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">
         로그인
       </h1>
-      <p className="text-gray-500 text-center mb-8">
-        백엔드 API와 연동된 프론트엔드
-      </p>
 
       {message && (
         <div
@@ -101,15 +98,8 @@ function Login() {
 
       <div className="mt-8 pt-6 border-t border-gray-200">
         <p className="text-sm text-gray-500 text-center">
-          🚀 Backend API: <br />
-          <a
-            href="https://backend-blog-snowy.vercel.app/api"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            backend-blog-snowy.vercel.app
-          </a>
+          🚀
+          <br />© 2025 지우의 블로그. All rights reserved.
         </p>
       </div>
     </div>
