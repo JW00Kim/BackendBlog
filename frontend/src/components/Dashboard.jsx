@@ -13,12 +13,12 @@ function Dashboard() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+    <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-8 w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">
         환영합니다! 🎉
       </h1>
 
-      <div className="bg-blue-50 rounded-lg p-6 mb-6">
+      <div className="bg-blue-50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <p className="text-gray-700 mb-2">
           <span className="font-semibold">이름:</span> {user.name}
         </p>
@@ -530,6 +530,92 @@ vercel logs [URL]         # 배포 로그 확인`}
               <p className="text-xs text-green-700">
                 Git Push만 하면 Vercel이 알아서 배포합니다. 별도의 설정이나
                 스크립트 없이도 자동 CI/CD가 작동합니다!
+              </p>
+            </div>
+          </div>
+
+          {/* 브라우저 캐시 처리 */}
+          <div className="bg-white rounded-lg p-4 mb-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">
+              🔄 브라우저 캐시 처리
+            </h3>
+
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">
+              ❓ 문제: 배포 후 변경사항이 안 보임
+            </h4>
+            <div className="bg-yellow-50 p-3 rounded mb-3">
+              <p className="text-sm text-gray-700">
+                사용자 브라우저가 <strong>이전 버전의 JS/CSS 파일을 캐시</strong>하고 있어서 
+                새로 배포해도 변경사항이 안 보일 수 있습니다.
+              </p>
+            </div>
+
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">
+              ✅ 해결 방법 (자동 처리)
+            </h4>
+
+            <p className="text-sm font-semibold text-gray-700 mb-2">
+              1. Vite 자동 해시 (이미 적용됨)
+            </p>
+            <pre className="bg-gray-800 text-green-400 p-3 rounded overflow-x-auto text-xs mb-3">
+              {`# 빌드 시 자동으로 파일명에 해시 추가
+index-abc123.js  ← 코드 변경 시 해시 변경
+style-def456.css
+
+# 파일명이 바뀌면 브라우저가 새로 다운로드`}
+            </pre>
+
+            <p className="text-sm font-semibold text-gray-700 mb-2">
+              2. vercel.json 캐시 정책 설정
+            </p>
+            <pre className="bg-gray-800 text-green-400 p-3 rounded overflow-x-auto text-xs mb-3">
+              {`{
+  "headers": [
+    {
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}`}
+            </pre>
+
+            <div className="text-sm text-gray-700 space-y-2 mb-3">
+              <p>
+                <strong>• index.html:</strong> 캐시 안 함 → 항상 최신 버전 체크
+              </p>
+              <p>
+                <strong>• /assets/ (JS/CSS):</strong> 1년 캐시 + 불변 → 해시로 버전 관리
+              </p>
+            </div>
+
+            <h4 className="font-bold text-gray-700 mt-3 mb-2">
+              🔧 사용자가 캐시 문제 겪을 때
+            </h4>
+            <div className="bg-blue-50 p-3 rounded">
+              <p className="text-sm font-semibold text-gray-800 mb-2">
+                임시 해결 방법 (사용자 안내):
+              </p>
+              <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                <li><strong>Shift + F5</strong>: 강제 새로고침 (캐시 무시)</li>
+                <li><strong>Ctrl + Shift + Delete</strong>: 브라우저 캐시 삭제</li>
+                <li><strong>시크릿/프라이빗 모드</strong>로 접속</li>
+              </ul>
+              <p className="text-xs text-gray-600 mt-2">
+                💡 위 설정을 적용하면 대부분 자동 해결됩니다!
               </p>
             </div>
           </div>
