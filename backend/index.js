@@ -17,8 +17,13 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    maxAge: 86400, // 24시간 preflight 캐싱
   })
 );
+
+// OPTIONS 요청 즉시 응답
+app.options("*", cors());
+
 app.use(express.json());
 
 // MongoDB 연결
