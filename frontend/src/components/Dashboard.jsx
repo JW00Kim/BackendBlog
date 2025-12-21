@@ -1,12 +1,15 @@
 import { logout } from "../api";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Dashboard({ user, onLogout }) {
+function Dashboard() {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
   const [showGuide, setShowGuide] = useState(false);
 
   const handleLogout = () => {
     logout();
-    onLogout();
+    navigate("/login");
   };
 
   return (
@@ -27,16 +30,22 @@ function Dashboard({ user, onLogout }) {
         </p>
       </div>
 
-      <div className="flex gap-3 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        <button
+          onClick={() => navigate("/resume")}
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
+        >
+          📄 이력서 보기
+        </button>
         <button
           onClick={() => setShowGuide(!showGuide)}
-          className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
         >
-          {showGuide ? "가이드 닫기" : "📚 프로젝트 가이드 보기"}
+          {showGuide ? "가이드 닫기" : "📚 프로젝트 가이드"}
         </button>
         <button
           onClick={handleLogout}
-          className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition duration-200"
         >
           로그아웃
         </button>

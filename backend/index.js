@@ -33,13 +33,6 @@ connectDB();
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
 
-// 간단한 데이터 모델 (Todo 예시)mongodb+srv://yjk9363_db_user:KOywu2fYhiGlVvZ2@blog.f4taven.mongodb.net/my_blog_db?retryWrites=true&w=majority
-const todoSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  completed: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-});
-
 // API Routes
 
 // 서버 상태 체크
@@ -52,71 +45,8 @@ app.get("/api", (req, res) => {
       signup: "POST /api/auth/signup",
       login: "POST /api/auth/login",
       me: "GET /api/auth/me",
-      todos: "/api/todos",
-      createTodo: "POST /api/todos",
-      updateTodo: "PUT /api/todos/:id",
-      deleteTodo: "DELETE /api/todos/:id",
     },
   });
-});
-
-// 모든 Todo 조회
-app.get("/api/todos", async (req, res) => {
-  try {
-    const todos = await Todo.find().sort({ createdAt: -1 });
-    res.json({ success: true, data: todos });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// Todo 생성
-app.post("/api/todos", async (req, res) => {
-  try {
-    const { title } = req.body;
-    const todo = new Todo({ title });
-    await todo.save();
-    res.status(201).json({ success: true, data: todo });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
-
-// Todo 업데이트
-app.put("/api/todos/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, completed } = req.body;
-    const todo = await Todo.findByIdAndUpdate(
-      id,
-      { title, completed },
-      { new: true, runValidators: true }
-    );
-    if (!todo) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Todo를 찾을 수 없습니다" });
-    }
-    res.json({ success: true, data: todo });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
-});
-
-// Todo 삭제
-app.delete("/api/todos/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const todo = await Todo.findByIdAndDelete(id);
-    if (!todo) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Todo를 찾을 수 없습니다" });
-    }
-    res.json({ success: true, message: "삭제되었습니다" });
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
-  }
 });
 
 // 404 에러 핸들링

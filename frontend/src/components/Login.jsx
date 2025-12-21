@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "../api";
 
-function Login({ onSuccess, onSwitchToSignup }) {
+function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,7 +92,7 @@ function Login({ onSuccess, onSwitchToSignup }) {
 
       <div className="mt-6 text-center">
         <button
-          onClick={onSwitchToSignup}
+          onClick={() => navigate("/signup")}
           className="text-blue-500 hover:text-blue-600 font-semibold"
         >
           회원가입하기
