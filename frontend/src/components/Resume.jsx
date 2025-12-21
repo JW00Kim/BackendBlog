@@ -5,16 +5,16 @@ function Resume() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-2xl p-8 w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 w-full max-w-5xl max-h-[95vh] overflow-y-auto">
       {/* 헤더 */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl p-8 mb-6 shadow-lg">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">{user.name}</h1>
-            <p className="text-blue-100 text-lg mb-4">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 shadow-lg">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0">
+          <div className="w-full sm:w-auto">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{user.name}</h1>
+            <p className="text-blue-100 text-base sm:text-lg mb-3 sm:mb-4">
               Full Stack Developer/IT 관리자
             </p>
-            <div className="flex gap-4 text-sm">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs sm:text-sm">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📧</span>
                 <span>{user.email}</span>
@@ -27,19 +27,19 @@ function Resume() {
           </div>
           <button
             onClick={() => navigate("/dashboard")}
-            className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition duration-200 backdrop-blur-sm"
+            className="bg-white/20 hover:bg-white/30 px-3 sm:px-4 py-2 rounded-lg transition duration-200 backdrop-blur-sm text-sm sm:text-base w-full sm:w-auto"
           >
             ← 뒤로가기
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* 왼쪽 사이드바 */}
-        <div className="lg:col-span-1 space-y-6">
+        <div className="lg:col-span-1 space-y-4 sm:space-y-6">
           {/* 프로필 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-blue-500 pb-2">
               👤 프로필
             </h2>
             <div className="space-y-2 text-sm text-gray-700">
@@ -66,8 +66,8 @@ function Resume() {
           </div>
 
           {/* 기술 스택 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 border-b-2 border-purple-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-purple-500 pb-2">
               💻 기술 스택
             </h2>
             <div className="space-y-4">
@@ -114,8 +114,8 @@ function Resume() {
           </div>
 
           {/* 언어 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 border-b-2 border-green-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-green-500 pb-2">
               🌏 언어
             </h2>
             <div className="space-y-3">
@@ -146,10 +146,10 @@ function Resume() {
         </div>
 
         {/* 오른쪽 메인 컨텐츠 */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* 소개 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-blue-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-blue-500 pb-2">
               ✨ 소개
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -162,8 +162,8 @@ function Resume() {
           </div>
 
           {/* 경력 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-purple-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-purple-500 pb-2">
               💼 경력
             </h2>
             <div className="space-y-4">
@@ -244,8 +244,8 @@ function Resume() {
           </div>
 
           {/* 프로젝트 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-green-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-pink-500 pb-2">
               🚀 프로젝트
             </h2>
             <div className="space-y-4">
@@ -302,31 +302,31 @@ function Resume() {
           </div>
 
           {/* 학력 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-yellow-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-yellow-500 pb-2">
               🎓 학력
             </h2>
-            <div className="relative pl-8 border-l-4 border-yellow-500">
+            <div className="relative pl-6 sm:pl-8 border-l-4 border-yellow-500">
               <div className="absolute -left-2 top-0 w-4 h-4 bg-yellow-500 rounded-full"></div>
-              <div className="mb-3 flex items-start gap-4">
-                <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden shadow-lg bg-white">
+              <div className="mb-3 flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                <div className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden shadow-lg bg-white">
                   <img 
                     src="/logo.png" 
                     alt="WSU Logo" 
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start mb-1">
-                    <h3 className="text-lg font-bold text-gray-800">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 gap-1 sm:gap-0">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-800">
                       Washington State University
                     </h3>
-                    <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap ml-2">
+                    <span className="text-xs sm:text-sm text-gray-600 bg-gray-100 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap self-start">
                       2018.08 - 2022.05
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-1">컴퓨터공학과 학사</p>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1">컴퓨터공학과 학사</p>
+                  <p className="text-xs sm:text-sm text-gray-700">
                     학점: 3.9 / 4.0 | 졸업 논문: "웹 성능 최적화 기법 연구"
                   </p>
                 </div>
@@ -335,8 +335,8 @@ function Resume() {
           </div>
 
           {/* 자격증 */}
-          <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-red-500 pb-2">
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-xl transition duration-300">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 border-b-2 border-red-500 pb-2">
               📜 자격증
             </h2>
             <div className="space-y-2">
@@ -356,8 +356,8 @@ function Resume() {
       </div>
 
       {/* 푸터 */}
-      <div className="mt-6 pt-6 border-t border-gray-300 text-center">
-        <p className="text-sm text-gray-500">
+      <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-300 text-center">
+        <p className="text-xs sm:text-sm text-gray-500">
           이 이력서는 {new Date().toLocaleDateString("ko-KR")}에 생성되었습니다
         </p>
       </div>

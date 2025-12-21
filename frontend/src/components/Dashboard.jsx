@@ -30,22 +30,22 @@ function Dashboard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 sm:mb-6">
         <button
           onClick={() => navigate("/resume")}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-lg"
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition duration-200 shadow-lg text-sm sm:text-base"
         >
           📄 이력서 보기
         </button>
         <button
           onClick={() => setShowGuide(!showGuide)}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition duration-200 text-sm sm:text-base"
         >
           {showGuide ? "가이드 닫기" : "📚 프로젝트 가이드"}
         </button>
         <button
           onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition duration-200 text-sm sm:text-base"
         >
           로그아웃
         </button>
