@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL =
-  import.meta.env.VITE_API_URL || "https://backend-blog-snowy.vercel.app/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+//const API_URL_VERCEL =import.meta.env.VITE_API_URL || "https://backend-blog-snowy.vercel.app/api";
 
 // API 인스턴스 생성
 const api = axios.create({

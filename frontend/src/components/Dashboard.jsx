@@ -211,7 +211,10 @@ git push -u origin master`}
             </h4>
             <div className="bg-blue-50 p-3 rounded mb-3">
               <p className="text-sm text-gray-700 mb-2">
-                <strong>같은 Git 저장소</strong>에서 <strong>두 개의 Vercel 프로젝트</strong>를 만들 수 있는 이유는 <code className="bg-gray-200 px-1 rounded">Root Directory</code> 설정 때문입니다.
+                <strong>같은 Git 저장소</strong>에서{" "}
+                <strong>두 개의 Vercel 프로젝트</strong>를 만들 수 있는 이유는{" "}
+                <code className="bg-gray-200 px-1 rounded">Root Directory</code>{" "}
+                설정 때문입니다.
               </p>
               <pre className="text-xs text-gray-700 bg-white p-2 rounded">
                 {`Git 저장소: BackendBlog/
@@ -266,9 +269,7 @@ vercel
                   <code className="bg-gray-200 px-1 rounded">git push</code> →
                   GitHub 저장소 업데이트
                 </li>
-                <li>
-                  Vercel Webhook 감지 → 변경된 파일 확인
-                </li>
+                <li>Vercel Webhook 감지 → 변경된 파일 확인</li>
                 <li>
                   <strong>backend-blog 프로젝트:</strong>
                   <ul className="list-disc list-inside ml-6 mt-1">
@@ -317,7 +318,9 @@ vercel
             </pre>
 
             <div className="mt-3 p-3 bg-green-50 rounded">
-              <p className="text-sm font-semibold text-green-800">💡 핵심 정리:</p>
+              <p className="text-sm font-semibold text-green-800">
+                💡 핵심 정리:
+              </p>
               <ul className="text-xs text-green-700 space-y-1 mt-2 list-disc list-inside">
                 <li>
                   <strong>Root Directory</strong>가 "어디를" 배포할지 결정
@@ -328,9 +331,7 @@ vercel
                 <li>
                   하나의 Git 저장소에 여러 Vercel 프로젝트 연결 가능 (Monorepo)
                 </li>
-                <li>
-                  Git Push하면 Vercel이 Root Directory 기준으로 각각 배포
-                </li>
+                <li>Git Push하면 Vercel이 Root Directory 기준으로 각각 배포</li>
               </ul>
             </div>
           </div>

@@ -11,7 +11,9 @@ function Resume() {
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-4xl font-bold mb-2">{user.name}</h1>
-            <p className="text-blue-100 text-lg mb-4">Full Stack Developer</p>
+            <p className="text-blue-100 text-lg mb-4">
+              Full Stack Developer/IT 관리자
+            </p>
             <div className="flex gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📧</span>
@@ -19,7 +21,7 @@ function Resume() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📱</span>
-                <span>010-1234-5678</span>
+                <span>010-2985-9363</span>
               </div>
             </div>
           </div>
@@ -42,10 +44,10 @@ function Resume() {
             </h2>
             <div className="space-y-2 text-sm text-gray-700">
               <p>
-                <strong>생년월일:</strong> 1995.01.01
+                <strong>생년월일:</strong> 1997.04.27
               </p>
               <p>
-                <strong>주소:</strong> 서울특별시
+                <strong>주소:</strong> 부산광역시
               </p>
               <p>
                 <strong>GitHub:</strong>{" "}
@@ -133,7 +135,7 @@ function Resume() {
                   <span className="text-sm font-medium text-gray-700">
                     영어
                   </span>
-                  <span className="text-sm text-gray-600">중급</span>
+                  <span className="text-sm text-gray-600">고급</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div className="bg-blue-500 h-2 rounded-full w-3/4"></div>
@@ -165,42 +167,77 @@ function Resume() {
               💼 경력
             </h2>
             <div className="space-y-4">
+              {/* IT 인프라 관리자 */}
               <div className="relative pl-8 border-l-4 border-blue-500">
                 <div className="absolute -left-2 top-0 w-4 h-4 bg-blue-500 rounded-full"></div>
                 <div className="mb-1 flex justify-between items-start">
                   <h3 className="text-lg font-bold text-gray-800">
-                    테크 컴퍼니
+                    현대 트랜시스
                   </h3>
-                  <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                  <span className="text-sm text-gray-600 bg-blue-100 px-3 py-1 rounded-full">
                     2023.01 - 현재
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  Full Stack Developer
+                <p className="text-sm font-semibold text-blue-700 mb-2">
+                  IT 인프라 관리자
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
-                  <li>React 기반 관리자 페이지 개발 및 운영</li>
-                  <li>Node.js/Express API 서버 설계 및 구현</li>
-                  <li>MongoDB 데이터베이스 최적화 (30% 성능 개선)</li>
-                  <li>CI/CD 파이프라인 구축 (Vercel 자동 배포)</li>
+                  <li>
+                    사내 IT 인프라 전반 관리 및 운영 (서버, 네트워크, 보안)
+                  </li>
+                  <li>클라우드 서비스 도입 및 하이브리드 인프라 구축</li>
+                  <li>정보 보안 정책 수립 및 컴플라이언스 관리</li>
+                  <li>사내 시스템 모니터링 및 장애 대응 (99.9% 가용성 유지)</li>
+                  <li>IT 예산 계획 및 비용 최적화 (연간 20% 절감)</li>
+                  <li>임직원 IT 지원 및 기술 교육</li>
                 </ul>
               </div>
 
+              {/* 풀스택 개발자 */}
               <div className="relative pl-8 border-l-4 border-purple-500">
                 <div className="absolute -left-2 top-0 w-4 h-4 bg-purple-500 rounded-full"></div>
                 <div className="mb-1 flex justify-between items-start">
                   <h3 className="text-lg font-bold text-gray-800">
-                    스타트업 XYZ
+                    테크 스타트업
                   </h3>
-                  <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                  <span className="text-sm text-gray-600 bg-purple-100 px-3 py-1 rounded-full">
                     2021.06 - 2022.12
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">Frontend Developer</p>
+                <p className="text-sm font-semibold text-purple-700 mb-2">
+                  Full Stack Developer
+                </p>
                 <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
-                  <li>React를 활용한 웹 애플리케이션 개발</li>
-                  <li>Tailwind CSS로 반응형 UI 구현</li>
-                  <li>RESTful API 연동 및 상태 관리</li>
+                  <li>React 기반 SPA 웹 애플리케이션 설계 및 개발</li>
+                  <li>Node.js/Express 백엔드 API 서버 구축</li>
+                  <li>
+                    MongoDB 데이터베이스 설계 및 최적화 (쿼리 성능 30% 개선)
+                  </li>
+                  <li>CI/CD 파이프라인 구축 (Vercel 자동 배포)</li>
+                  <li>RESTful API 설계 및 프론트엔드 연동</li>
+                  <li>Tailwind CSS를 활용한 반응형 UI/UX 구현</li>
+                </ul>
+              </div>
+
+              {/* 프론트엔드 개발자 */}
+              <div className="relative pl-8 border-l-4 border-green-500">
+                <div className="absolute -left-2 top-0 w-4 h-4 bg-green-500 rounded-full"></div>
+                <div className="mb-1 flex justify-between items-start">
+                  <h3 className="text-lg font-bold text-gray-800">
+                    웹 에이전시
+                  </h3>
+                  <span className="text-sm text-gray-600 bg-green-100 px-3 py-1 rounded-full">
+                    2020.03 - 2021.05
+                  </span>
+                </div>
+                <p className="text-sm font-semibold text-green-700 mb-2">
+                  Frontend Developer
+                </p>
+                <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                  <li>React를 활용한 기업 웹사이트 개발 (10+ 프로젝트)</li>
+                  <li>반응형 웹 디자인 구현 및 크로스 브라우징 대응</li>
+                  <li>JavaScript ES6+ 활용한 인터랙티브 UI 구현</li>
+                  <li>Git을 통한 협업 및 코드 리뷰 참여</li>
                 </ul>
               </div>
             </div>
@@ -271,16 +308,29 @@ function Resume() {
             </h2>
             <div className="relative pl-8 border-l-4 border-yellow-500">
               <div className="absolute -left-2 top-0 w-4 h-4 bg-yellow-500 rounded-full"></div>
-              <div className="mb-1 flex justify-between items-start">
-                <h3 className="text-lg font-bold text-gray-800">한국대학교</h3>
-                <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                  2017.03 - 2021.02
-                </span>
+              <div className="mb-3 flex items-start gap-4">
+                <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden shadow-lg bg-white">
+                  <img 
+                    src="/logo.png" 
+                    alt="WSU Logo" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="text-lg font-bold text-gray-800">
+                      Washington State University
+                    </h3>
+                    <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap ml-2">
+                      2018.08 - 2022.05
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-1">컴퓨터공학과 학사</p>
+                  <p className="text-sm text-gray-700">
+                    학점: 3.9 / 4.0 | 졸업 논문: "웹 성능 최적화 기법 연구"
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-gray-600">컴퓨터공학과 학사</p>
-              <p className="text-sm text-gray-700 mt-2">
-                학점: 4.0 / 4.5 | 졸업 논문: "웹 성능 최적화 기법 연구"
-              </p>
             </div>
           </div>
 
@@ -291,9 +341,7 @@ function Resume() {
             </h2>
             <div className="space-y-2">
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="font-medium text-gray-800">
-                  정보처리기사
-                </span>
+                <span className="font-medium text-gray-800">정보처리기사</span>
                 <span className="text-sm text-gray-600">2020.08</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
