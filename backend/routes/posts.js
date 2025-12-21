@@ -27,8 +27,9 @@ const authenticateUser = async (req, res, next) => {
     }
 
     req.user = user;
-    next();
+    return next(); // return 추가로 명확하게
   } catch (error) {
+    console.error("인증 에러:", error); // 로그 추가
     return res.status(401).json({
       success: false,
       message: "유효하지 않은 토큰입니다",
