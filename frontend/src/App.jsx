@@ -5,6 +5,10 @@ import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard";
 import Resume from "./components/Resume";
 import Navbar from "./components/Navbar";
+import PostList from "./components/PostList";
+import PostCreate from "./components/PostCreate";
+import PostDetail from "./components/PostDetail";
+import PostEdit from "./components/PostEdit";
 
 // 보호된 라우트 컴포넌트
 function PrivateRoute({ children }) {
@@ -54,6 +58,38 @@ function App() {
               element={
                 <PrivateRoute>
                   <Resume />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/posts"
+              element={
+                <PrivateRoute>
+                  <PostList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/posts/create"
+              element={
+                <PrivateRoute>
+                  <PostCreate />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/posts/:id"
+              element={
+                <PrivateRoute>
+                  <PostDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/posts/edit/:id"
+              element={
+                <PrivateRoute>
+                  <PostEdit />
                 </PrivateRoute>
               }
             />

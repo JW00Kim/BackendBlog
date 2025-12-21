@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const express = require("express"); // 익스프레스 라우터 불러오기
+const router = express.Router(); // 라우터 생성
+const jwt = require("jsonwebtoken"); // JWT 토큰 생성을 위한 라이브러리
+const User = require("../models/User"); // 사용자 모델 불러오기
 
 // JWT 토큰 생성 함수
 const generateToken = (userId) => {
@@ -80,7 +80,7 @@ router.post("/signup", async (req, res) => {
 // @access  Public
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body; // 클라이언트 에서 보낸 데이터
 
     // 필수 필드 체크
     if (!email || !password) {
@@ -107,6 +107,16 @@ router.post("/login", async (req, res) => {
         message: "이메일 또는 비밀번호가 잘못되었습니다",
       });
     }
+
+    // ========== 허용된 사용자 이름 확인 ==========
+    // const allowedNames = ["김지원", "정윤서", "김승주"]; // 허용할 이름 목록
+
+    // if (!allowedNames.includes(user.name)) {
+    //   return res.status(403).json({
+    //     success: false,
+    //     message: "로그인 권한이 없는 사용자입니다",
+    //   });
+    // }
 
     // JWT 토큰 생성
     const token = generateToken(user._id);

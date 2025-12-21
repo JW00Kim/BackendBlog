@@ -32,16 +32,16 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 sm:mb-6">
         <button
+          onClick={() => navigate("/posts")}
+          className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition duration-200 shadow-lg text-sm sm:text-base"
+        >
+          📝 게시물 보기
+        </button>
+        <button
           onClick={() => navigate("/resume")}
           className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition duration-200 shadow-lg text-sm sm:text-base"
         >
           📄 이력서 보기
-        </button>
-        <button
-          onClick={() => setShowGuide(!showGuide)}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition duration-200 text-sm sm:text-base"
-        >
-          {showGuide ? "가이드 닫기" : "📚 프로젝트 가이드"}
         </button>
         <button
           onClick={handleLogout}
@@ -50,6 +50,13 @@ function Dashboard() {
           로그아웃
         </button>
       </div>
+
+      <button
+        onClick={() => setShowGuide(!showGuide)}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition duration-200 text-sm sm:text-base mb-4"
+      >
+        {showGuide ? "가이드 닫기" : "📚 프로젝트 가이드"}
+      </button>
 
       {showGuide && (
         <div className="prose prose-sm max-w-none bg-gray-50 rounded-lg p-6 text-left">
