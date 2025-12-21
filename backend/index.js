@@ -39,11 +39,20 @@ const connectDB = async () => {
   }
 };
 
+// MongoDB 연결 (await 제거 - Vercel Serverless에서는 각 요청마다 연결)
 connectDB();
 
 // Routes
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
+
+// 라우트 등록 전에 DB 연결 확인 미들웨어
+app.use(async (req, res, next) => {
+  if (!isConnected && mongoose.connection.readyState !== 1) {
+    await connectDB();
+  }
+  next();
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
