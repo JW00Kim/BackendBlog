@@ -33,7 +33,7 @@ connectDB();
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
 
-// 간단한 데이터 모델 (Todo 예시)
+// 간단한 데이터 모델 (Todo 예시)mongodb+srv://yjk9363_db_user:KOywu2fYhiGlVvZ2@blog.f4taven.mongodb.net/my_blog_db?retryWrites=true&w=majority
 const todoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   completed: { type: Boolean, default: false },
