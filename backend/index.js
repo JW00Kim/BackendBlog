@@ -76,12 +76,5 @@ app.use((req, res) => {
     .json({ success: false, error: "요청한 엔드포인트를 찾을 수 없습니다" });
 });
 
-// 서버 시작 (로컬 개발 환경에서만)
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`🚀 서버가 포트 ${PORT}에서 실행중입니다`);
-  });
-}
-
 // Vercel을 위한 export
 module.exports = app;
