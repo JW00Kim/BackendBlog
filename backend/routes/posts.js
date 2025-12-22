@@ -9,46 +9,19 @@ const User = require("../models/User");
 // @access  Public (테스트용 - 인증 제거)
 router.post("/", async (req, res) => {
   try {
-    const { title, content, authorId } = req.body;
-
-    // 필수 필드 체크
-    if (!title || !content) {
-      return res.status(400).json({
-        success: false,
-        message: "제목과 내용을 모두 입력해주세요",
-      });
-    }
-
-    // authorId가 없으면 기본 사용자 ID 사용
-    const author = authorId || "69474f413ddedc3f0f26366e";
-
-    // 게시물 생성
-    const post = await Post.create({
-      title,
-      content,
-      author: author,
-    });
-
-    // 작성자 정보 포함해서 응답
-    const populatedPost = await Post.findById(post._id).populate(
-      "author",
-      "name email"
-    );
-
+    console.log("POST /posts called");
     res.status(201).json({
       success: true,
-      message: "게시물이 작성되었습니다",
-      data: {
-        post: populatedPost,
-      },
+      message: "테스트 성공",
+      data: req.body
     });
   } catch (error) {
-    console.error("게시물 작성 에러:", error);
+    console.error("게시물 작성 에러:", error.stack);
     res.status(500).json({
       success: false,
       message: "서버 오류가 발생했습니다",
       error: error.message,
-      location: "POST /api/posts route"
+      stack: error.stack
     });
   }
 });
