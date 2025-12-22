@@ -34,11 +34,10 @@ function PostList() {
     try {
       const data = await deletePost(postId);
       if (data.success) {
-        alert("게시물이 삭제되었습니다.");
         fetchPosts(); // 목록 새로고침
       }
     } catch (err) {
-      alert("삭제에 실패했습니다.");
+      setError("삭제에 실패했습니다.");
       console.error(err);
     }
   };
@@ -92,45 +91,47 @@ function PostList() {
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {posts.map((post) => (
                 <div
                   key={post._id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
+                  className="border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-all duration-200 bg-white"
                 >
-                  <div className="flex justify-between items-start">
-                    <div
-                      className="flex-1 cursor-pointer"
-                      onClick={() => navigate(`/posts/${post._id}`)}
-                    >
-                      <h2 className="text-xl font-bold text-gray-800 mb-2">
-                        {post.title}
-                      </h2>
-                      <p className="text-gray-600 mb-3 line-clamp-2">
-                        {post.content}
-                      </p>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <span className="mr-4">
-                          👤 {post.author?.name || "익명"}
-                        </span>
-                        <span>
-                          📅{" "}
-                          {new Date(post.createdAt).toLocaleDateString("ko-KR")}
-                        </span>
-                      </div>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => navigate(`/posts/${post._id}`)}
+                  >
+                    <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-blue-600 transition">
+                      {post.title}
+                    </h2>
+                    <p className="text-gray-600 mb-4 line-clamp-3 text-sm">
+                      {post.content}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                    <div className="flex flex-col text-xs text-gray-500 space-y-1">
+                      <span>👤 {post.author?.name || "익명"}</span>
+                      <span>📅 {new Date(post.createdAt).toLocaleDateString("ko-KR")}</span>
                     </div>
 
                     {currentUser && post.author?._id === currentUser.id && (
-                      <div className="ml-4 space-x-2">
+                      <div className="flex space-x-2">
                         <button
-                          onClick={() => navigate(`/posts/edit/${post._id}`)}
-                          className="text-blue-500 hover:text-blue-600 px-3 py-1 border border-blue-500 rounded transition"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/posts/edit/${post._id}`);
+                          }}
+                          className="text-blue-500 hover:bg-blue-50 px-3 py-1 rounded text-sm transition"
                         >
                           수정
                         </button>
                         <button
-                          onClick={() => handleDelete(post._id)}
-                          className="text-red-500 hover:text-red-600 px-3 py-1 border border-red-500 rounded transition"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(post._id);
+                          }}
+                          className="text-red-500 hover:bg-red-50 px-3 py-1 rounded text-sm transition"
                         >
                           삭제
                         </button>

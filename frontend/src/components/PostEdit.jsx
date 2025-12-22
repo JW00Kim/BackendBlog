@@ -56,7 +56,6 @@ function PostEdit() {
       const data = await updatePost(id, formData);
 
       if (data.success) {
-        alert("게시물이 수정되었습니다!");
         navigate(`/posts/${id}`);
       }
     } catch (err) {

@@ -32,7 +32,6 @@ function PostCreate() {
       const data = await createPost(formData);
 
       if (data.success) {
-        alert("게시물이 작성되었습니다!");
         navigate("/posts");
       }
     } catch (err) {
