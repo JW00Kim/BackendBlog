@@ -28,14 +28,6 @@ const connectDB = async () => {
   }
 };
 
-// OPTIONS 요청 먼저 처리 (CORS preflight)
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(200);
-});
-
 // CORS - 모든 도메인 허용
 app.use(cors());
 app.use(express.json());
