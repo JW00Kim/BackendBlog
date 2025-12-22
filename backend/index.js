@@ -45,19 +45,6 @@ connectDB();
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
 
-// 라우트 등록 전에 DB 연결 확인 미들웨어 (OPTIONS 요청 제외)
-app.use(async (req, res, next) => {
-  // OPTIONS 요청은 DB 연결 불필요
-  if (req.method === 'OPTIONS') {
-    return next();
-  }
-  
-  if (!isConnected && mongoose.connection.readyState !== 1) {
-    await connectDB();
-  }
-  next();
-});
-
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 
