@@ -137,3 +137,4 @@ vercel --prod
 - **cors** - Cross-Origin Resource Sharing 설정
 - **dotenv** - 환경 변수 관리
 - **nodemon** (dev) - 개발시 자동 재시작
+# Force rebuild Sun Dec 21 18:10:55 CST 2025
