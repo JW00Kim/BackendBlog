@@ -28,9 +28,8 @@ const postSchema = new mongoose.Schema({
 });
 
 // 게시물 수정 시 updatedAt 자동 갱신
-postSchema.pre("save", function (next) {
+postSchema.pre("save", function () {
   this.updatedAt = Date.now();
-  next();
 });
 
 module.exports = mongoose.model("Post", postSchema);
