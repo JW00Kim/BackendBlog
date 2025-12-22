@@ -4,45 +4,10 @@ const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
 const User = require("../models/User");
 
-// ========== 인증 미들웨어 ==========
-async function authenticateUser(req, res, next) {
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
-      success: false,
-      message: "로그인이 필요합니다",
-    });
-  }
-
-  const token = authHeader.split(" ")[1];
-  
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "사용자를 찾을 수 없습니다",
-      });
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
-    console.error("인증 에러:", error);
-    return res.status(401).json({
-      success: false,
-      message: "유효하지 않은 토큰입니다",
-    });
-  }
-}
-
 // @route   POST /api/posts
 // @desc    게시물 작성
 // @access  Private (로그인 필요)
-router.post("/", async (req, res, next) => {
+router.post("/", async (req, res) => {
   // 인증 체크
   const authHeader = req.headers.authorization;
   
