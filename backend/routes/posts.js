@@ -9,19 +9,32 @@ const User = require("../models/User");
 // @access  Public (테스트용 - 인증 제거)
 router.post("/", async (req, res) => {
   try {
-    console.log("POST /posts called");
+    const { title, content } = req.body;
+
+    if (!title || !content) {
+      return res.status(400).json({
+        success: false,
+        message: "제목과 내용을 모두 입력해주세요",
+      });
+    }
+
+    const post = await Post.create({
+      title,
+      content,
+      author: "69474f413ddedc3f0f26366e", // 기본 사용자 ID
+    });
+
     res.status(201).json({
       success: true,
-      message: "테스트 성공",
-      data: req.body
+      message: "게시물이 작성되었습니다",
+      data: { post }
     });
   } catch (error) {
     console.error("게시물 작성 에러:", error.stack);
     res.status(500).json({
       success: false,
       message: "서버 오류가 발생했습니다",
-      error: error.message,
-      stack: error.stack
+      error: error.message
     });
   }
 });
