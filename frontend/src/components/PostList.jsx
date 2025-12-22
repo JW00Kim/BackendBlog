@@ -56,16 +56,16 @@ function PostList() {
         <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800">📝 게시물</h1>
-            <div className="space-x-2">
+            <div className="flex gap-2">
               <button
                 onClick={() => navigate("/dashboard")}
-                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
+                className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm transition"
               >
                 대시보드
               </button>
               <button
                 onClick={() => navigate("/posts/create")}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded text-sm transition"
               >
                 ✏️ 글쓰기
               </button>
@@ -104,25 +104,27 @@ function PostList() {
                     <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-blue-600 transition">
                       {post.title}
                     </h2>
-                    <p className="text-gray-600 mb-4 line-clamp-3 text-sm">
-                      {post.content}
+                    <p className="text-gray-600 mb-4 text-sm whitespace-pre-wrap break-words">
+                      {post.content.length > 150 
+                        ? post.content.substring(0, 150) + "..." 
+                        : post.content}
                     </p>
                   </div>
                   
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                    <div className="flex flex-col text-xs text-gray-500 space-y-1">
+                    <div className="flex items-center gap-3 text-xs text-gray-500">
                       <span>👤 {post.author?.name || "익명"}</span>
                       <span>📅 {new Date(post.createdAt).toLocaleDateString("ko-KR")}</span>
                     </div>
 
                     {currentUser && post.author?._id === currentUser.id && (
-                      <div className="flex space-x-2">
+                      <div className="flex gap-1.5">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/posts/edit/${post._id}`);
                           }}
-                          className="text-blue-500 hover:bg-blue-50 px-3 py-1 rounded text-sm transition"
+                          className="text-blue-500 hover:bg-blue-50 px-2.5 py-1 rounded text-xs transition"
                         >
                           수정
                         </button>
@@ -131,7 +133,7 @@ function PostList() {
                             e.stopPropagation();
                             handleDelete(post._id);
                           }}
-                          className="text-red-500 hover:bg-red-50 px-3 py-1 rounded text-sm transition"
+                          className="text-red-500 hover:bg-red-50 px-2.5 py-1 rounded text-xs transition"
                         >
                           삭제
                         </button>
