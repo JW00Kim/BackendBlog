@@ -55,13 +55,13 @@ function PostList() {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">📝 게시물</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">📝 Posts</h1>
             <div className="flex gap-2">
               <button
                 onClick={() => navigate("/dashboard")}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm transition"
               >
-                대시보드
+                홈
               </button>
               <button
                 onClick={() => navigate("/posts/create")}
