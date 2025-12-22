@@ -78,6 +78,7 @@ router.post("/", async (req, res) => {
       success: false,
       message: "서버 오류가 발생했습니다",
       error: error.message,
+      location: "POST /api/posts route"
     });
   }
 });
