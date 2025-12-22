@@ -144,7 +144,38 @@ router.get("/:id", async (req, res) => {
 // @route   PUT /api/posts/:id
 // @desc    게시물 수정
 // @access  Private (본인만)
-router.put("/:id", authenticateUser, async (req, res) => {
+router.put("/:id", async (req, res) => {
+  // 인증 체크
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      message: "로그인이 필요합니다",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+  
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "사용자를 찾을 수 없습니다",
+      });
+    }
+
+    req.user = user;
+  } catch (error) {
+    console.error("인증 에러:", error);
+    return res.status(401).json({
+      success: false,
+      message: "유효하지 않은 토큰입니다",
+    });
+  }
   try {
     const { title, content } = req.body;
     const post = await Post.findById(req.params.id);
@@ -194,7 +225,38 @@ router.put("/:id", authenticateUser, async (req, res) => {
 // @route   DELETE /api/posts/:id
 // @desc    게시물 삭제
 // @access  Private (본인만)
-router.delete("/:id", authenticateUser, async (req, res) => {
+router.delete("/:id", async (req, res) => {
+  // 인증 체크
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      message: "로그인이 필요합니다",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+  
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "사용자를 찾을 수 없습니다",
+      });
+    }
+
+    req.user = user;
+  } catch (error) {
+    console.error("인증 에러:", error);
+    return res.status(401).json({
+      success: false,
+      message: "유효하지 않은 토큰입니다",
+    });
+  }
   try {
     const post = await Post.findById(req.params.id);
 
