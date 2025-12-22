@@ -5,7 +5,7 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 
 // ========== 인증 미들웨어 ==========
-const authenticateUser = (req, res, next) => {
+async function authenticateUser(req, res, next) {
   const authHeader = req.headers.authorization;
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -19,33 +19,25 @@ const authenticateUser = (req, res, next) => {
   
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    User.findById(decoded.id)
-      .then(user => {
-        if (!user) {
-          return res.status(401).json({
-            success: false,
-            message: "사용자를 찾을 수 없습니다",
-          });
-        }
-        req.user = user;
-        next();
-      })
-      .catch(error => {
-        console.error("사용자 조회 에러:", error);
-        return res.status(401).json({
-          success: false,
-          message: "인증 오류가 발생했습니다",
-        });
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "사용자를 찾을 수 없습니다",
       });
+    }
+
+    req.user = user;
+    next();
   } catch (error) {
-    console.error("토큰 검증 에러:", error);
+    console.error("인증 에러:", error);
     return res.status(401).json({
       success: false,
       message: "유효하지 않은 토큰입니다",
     });
   }
-};
+}
 
 // @route   POST /api/posts
 // @desc    게시물 작성
