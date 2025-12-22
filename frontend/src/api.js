@@ -17,7 +17,12 @@ const api = axios.create({
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
-    console.log("🔵 API 요청:", config.method.toUpperCase(), config.url, config.data);
+    console.log(
+      "🔵 API 요청:",
+      config.method.toUpperCase(),
+      config.url,
+      config.data
+    );
     return config;
   },
   (error) => {
