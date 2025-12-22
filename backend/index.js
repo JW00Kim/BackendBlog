@@ -32,11 +32,8 @@ const connectDB = async () => {
 app.use(cors());
 app.use(express.json());
 
-// 각 요청마다 DB 연결 확인
-app.use(async (req, res, next) => {
-  await connectDB();
-  next();
-});
+// MongoDB 연결 (앱 시작 시 한 번)
+connectDB();
 
 // Routes
 const authRoutes = require("./routes/auth");
