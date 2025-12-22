@@ -27,14 +27,14 @@ router.post("/", async (req, res) => {
     res.status(201).json({
       success: true,
       message: "게시물이 작성되었습니다",
-      data: { post }
+      data: { post },
     });
   } catch (error) {
     console.error("게시물 작성 에러:", error.stack);
     res.status(500).json({
       success: false,
       message: "서버 오류가 발생했습니다",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -104,8 +104,8 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   // 인증 체크
   const authHeader = req.headers.authorization;
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
       message: "로그인이 필요합니다",
@@ -113,7 +113,7 @@ router.put("/:id", async (req, res) => {
   }
 
   const token = authHeader.split(" ")[1];
-  
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
@@ -185,8 +185,8 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   // 인증 체크
   const authHeader = req.headers.authorization;
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
       message: "로그인이 필요합니다",
@@ -194,7 +194,7 @@ router.delete("/:id", async (req, res) => {
   }
 
   const token = authHeader.split(" ")[1];
-  
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);

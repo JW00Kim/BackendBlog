@@ -1,4 +1,4 @@
 // Vercel Serverless Function
-const app = require('../index');
+const app = require("../index");
 
 module.exports = app;

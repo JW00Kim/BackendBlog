@@ -55,7 +55,9 @@ function PostList() {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">📝 Posts</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+              📝 대쉬보드
+            </h1>
             <div className="flex gap-2">
               <button
                 onClick={() => navigate("/dashboard")}
@@ -105,16 +107,19 @@ function PostList() {
                       {post.title}
                     </h2>
                     <p className="text-gray-600 mb-4 text-sm whitespace-pre-wrap break-words">
-                      {post.content.length > 150 
-                        ? post.content.substring(0, 150) + "..." 
+                      {post.content.length > 150
+                        ? post.content.substring(0, 150) + "..."
                         : post.content}
                     </p>
                   </div>
-                  
+
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div className="flex items-center gap-3 text-xs text-gray-500">
                       <span>👤 {post.author?.name || "익명"}</span>
-                      <span>📅 {new Date(post.createdAt).toLocaleDateString("ko-KR")}</span>
+                      <span>
+                        📅{" "}
+                        {new Date(post.createdAt).toLocaleDateString("ko-KR")}
+                      </span>
                     </div>
 
                     {currentUser && post.author?._id === currentUser.id && (
