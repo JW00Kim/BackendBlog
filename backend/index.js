@@ -6,6 +6,28 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// MongoDB 연결 캐싱 (Vercel Serverless에서 재사용)
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) {
+    return;
+  }
+
+  try {
+    if (process.env.MONGODB_URI) {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 10000,
+      });
+      isConnected = true;
+      console.log("✅ MongoDB 연결 성공");
+    }
+  } catch (error) {
+    console.error("❌ MongoDB 연결 실패:", error.message);
+  }
+};
+
 // OPTIONS 요청 먼저 처리 (CORS preflight)
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -18,36 +40,11 @@ app.options("*", (req, res) => {
 app.use(cors());
 app.use(express.json());
 
-// MongoDB 연결 캐싱 (Vercel Serverless에서 재사용)
-let isConnected = false;
-
-const connectDB = async () => {
-  if (isConnected) {
-    console.log("✅ MongoDB 이미 연결됨 (캐시 사용)");
-    return;
-  }
-
-  try {
-    if (process.env.MONGODB_URI) {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        serverSelectionTimeoutMS: 5000, // 5초 timeout
-        socketTimeoutMS: 10000, // 10초 timeout
-      });
-      isConnected = true;
-      console.log("✅ MongoDB 연결 성공");
-    } else {
-      console.log(
-        "⚠️  MongoDB URI가 설정되지 않았습니다. .env 파일을 확인하세요."
-      );
-    }
-  } catch (error) {
-    console.error("❌ MongoDB 연결 실패:", error.message);
-    // Vercel에서는 MongoDB 연결 없이도 서버가 동작하도록 설정
-  }
-};
-
-// MongoDB 연결 (await 제거 - Vercel Serverless에서는 각 요청마다 연결)
-connectDB();
+// 각 요청마다 DB 연결 확인
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 // Routes
 const authRoutes = require("./routes/auth");
