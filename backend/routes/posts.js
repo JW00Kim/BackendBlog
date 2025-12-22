@@ -4,18 +4,19 @@ const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
 const User = require("../models/User");
 
-// ========== 인증 미들웨어 ==========
+// ========== 인증 미들웨어 (v2 - 완전히 재작성) ==========
 const authenticateUser = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-
-    if (!token) {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
         message: "로그인이 필요합니다",
       });
     }
 
+    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
@@ -27,9 +28,9 @@ const authenticateUser = async (req, res, next) => {
     }
 
     req.user = user;
-    return next(); // return 추가로 명확하게
+    return next();
   } catch (error) {
-    console.error("인증 에러:", error); // 로그 추가
+    console.error("인증 에러:", error);
     return res.status(401).json({
       success: false,
       message: "유효하지 않은 토큰입니다",
