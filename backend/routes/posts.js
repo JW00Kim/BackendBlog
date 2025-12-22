@@ -6,43 +6,10 @@ const User = require("../models/User");
 
 // @route   POST /api/posts
 // @desc    게시물 작성
-// @access  Private (로그인 필요)
+// @access  Public (테스트용 - 인증 제거)
 router.post("/", async (req, res) => {
-  // 인증 체크
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
-      success: false,
-      message: "로그인이 필요합니다",
-    });
-  }
-
-  const token = authHeader.split(" ")[1];
-  
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "사용자를 찾을 수 없습니다",
-      });
-    }
-
-    req.user = user;
-  } catch (error) {
-    console.error("인증 에러:", error);
-    return res.status(401).json({
-      success: false,
-      message: "유효하지 않은 토큰입니다",
-    });
-  }
-
-  // 게시물 작성 로직
-  try {
-    const { title, content } = req.body;
+    const { title, content, authorId } = req.body;
 
     // 필수 필드 체크
     if (!title || !content) {
@@ -52,11 +19,14 @@ router.post("/", async (req, res) => {
       });
     }
 
+    // authorId가 없으면 기본 사용자 ID 사용
+    const author = authorId || "69474f413ddedc3f0f26366e";
+
     // 게시물 생성
     const post = await Post.create({
       title,
       content,
-      author: req.user._id, // 로그인한 사용자 ID
+      author: author,
     });
 
     // 작성자 정보 포함해서 응답
