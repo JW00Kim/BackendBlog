@@ -70,10 +70,9 @@ router.get("/", async (req, res) => {
 // @access  Public
 router.get("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate(
-      "author",
-      "name email"
-    );
+    const post = await Post.findById(req.params.id)
+      .populate("author", "name email")
+      .populate("likes", "name email"); // 좋아요 누른 사용자 정보 포함
 
     if (!post) {
       return res.status(404).json({
@@ -240,6 +239,83 @@ router.delete("/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("게시물 삭제 에러:", error);
+    res.status(500).json({
+      success: false,
+      message: "서버 오류가 발생했습니다",
+      error: error.message,
+    });
+  }
+});
+
+// @route   POST /api/posts/:id/like
+// @desc    게시물 좋아요 토글 (추가/제거)
+// @access  Private (로그인 필요)
+router.post("/:id/like", async (req, res) => {
+  // 인증 체크
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      message: "로그인이 필요합니다",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "사용자를 찾을 수 없습니다",
+      });
+    }
+
+    req.user = user;
+  } catch (error) {
+    console.error("인증 에러:", error);
+    return res.status(401).json({
+      success: false,
+      message: "유효하지 않은 토큰입니다",
+    });
+  }
+
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "게시물을 찾을 수 없습니다",
+      });
+    }
+
+    const userId = req.user._id;
+    const likeIndex = post.likes.indexOf(userId);
+
+    if (likeIndex > -1) {
+      // 이미 좋아요 누른 경우 - 제거
+      post.likes.splice(likeIndex, 1);
+    } else {
+      // 좋아요 추가
+      post.likes.push(userId);
+    }
+
+    await post.save();
+
+    res.json({
+      success: true,
+      message: likeIndex > -1 ? "좋아요를 취소했습니다" : "좋아요를 눌렀습니다",
+      data: {
+        likesCount: post.likes.length,
+        isLiked: likeIndex === -1,
+      },
+    });
+  } catch (error) {
+    console.error("좋아요 에러:", error);
     res.status(500).json({
       success: false,
       message: "서버 오류가 발생했습니다",

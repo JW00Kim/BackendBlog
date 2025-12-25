@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 // MongoDB 연결 캐싱 (Vercel Serverless에서 재사용)
 let isConnected = false;
@@ -15,6 +15,13 @@ const connectDB = async () => {
   }
 
   try {
+    if (!process.env.MONGODB_URI) {
+      console.error(
+        "❌ MONGODB_URI가 설정되지 않았습니다. backend/.env 또는 Vercel 환경 변수에 값을 넣어주세요."
+      );
+      return;
+    }
+
     if (process.env.MONGODB_URI) {
       await mongoose.connect(process.env.MONGODB_URI, {
         serverSelectionTimeoutMS: 5000,
@@ -38,9 +45,11 @@ connectDB();
 // Routes
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
+const commentRoutes = require("./routes/comments");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api", commentRoutes);
 
 // API Routes
 
@@ -64,6 +73,13 @@ app.use((req, res) => {
     .status(404)
     .json({ success: false, error: "요청한 엔드포인트를 찾을 수 없습니다" });
 });
+
+// 로컬 개발 서버 실행 (Vercel에서는 실행 안됨)
+if (process.env.NODE_ENV !== "production" && require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 서버가 http://localhost:${PORT} 에서 실행중입니다`);
+  });
+}
 
 // Vercel을 위한 export
 module.exports = app;

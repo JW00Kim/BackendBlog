@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://backend-blog-snowy.vercel.app/api";
+const API_URL2 = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 console.log("🔧 API_URL:", API_URL);
 
@@ -131,6 +132,54 @@ export const deletePost = async (id) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  return response.data;
+};
+
+// ===== Comments API =====
+
+// 특정 게시물의 댓글 목록 가져오기
+export const getComments = async (postId) => {
+  const response = await api.get(`/posts/${postId}/comments`);
+  return response.data;
+};
+
+// 댓글 작성
+export const createComment = async (postId, content) => {
+  const token = localStorage.getItem("token");
+  const response = await api.post(
+    `/posts/${postId}/comments`,
+    { content },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+// 댓글 삭제
+export const deleteComment = async (commentId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.delete(`/comments/${commentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const likePost = async (postId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.post(
+    `/posts/${postId}/like`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data;
 };
 

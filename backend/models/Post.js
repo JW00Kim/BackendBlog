@@ -17,6 +17,12 @@ const postSchema = new mongoose.Schema({
     ref: "User", // User 모델 참조
     required: [true, "작성자가 필요합니다"],
   },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // 좋아요 누른 사용자들
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
