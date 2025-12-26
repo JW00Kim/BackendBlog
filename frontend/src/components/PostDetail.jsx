@@ -7,6 +7,7 @@ import {
   createComment,
   deleteComment,
   likePost,
+  likeComment,
 } from "../api";
 
 export default function PostDetail() {
@@ -20,12 +21,12 @@ export default function PostDetail() {
   const [comments, setComments] = useState([]);
   const [commentContent, setCommentContent] = useState("");
   const [commentLoading, setCommentLoading] = useState(false);
-  
+
   // 좋아요 관련 state
   const [likesCount, setLikesCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
-  
+
   const currentUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -95,7 +96,6 @@ export default function PostDetail() {
   // 댓글 삭제
   const handleCommentDelete = async (commentId) => {
     if (!confirm("댓글을 삭제하시겠습니까?")) return;
-
     try {
       const data = await deleteComment(commentId);
       if (data.success) {
@@ -103,6 +103,34 @@ export default function PostDetail() {
       }
     } catch (err) {
       alert(err.response?.data?.message || "댓글 삭제에 실패했습니다");
+    }
+  };
+
+  // 댓글 좋아요 토글
+  const handleCommentLike = async (commentId) => {
+    if (!currentUser) {
+      alert("로그인이 필요합니다");
+      navigate("/login");
+      return;
+    }
+    try {
+      const data = await likeComment(commentId);
+      if (data.success) {
+        setComments((prev) =>
+          prev.map((c) =>
+            c._id === commentId
+              ? {
+                  ...c,
+                  likes: data.data.isLiked
+                    ? [...c.likes, currentUser.id]
+                    : c.likes.filter((id) => id !== currentUser.id),
+                }
+              : c
+          )
+        );
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "댓글 좋아요 처리 실패");
     }
   };
 
@@ -120,7 +148,7 @@ export default function PostDetail() {
       if (data.success) {
         setLikesCount(data.data.likesCount);
         setIsLiked(data.data.isLiked);
-        
+
         // 게시물 다시 불러와서 좋아요 누른 사람 목록 갱신
         const postData = await getPost(id);
         if (postData.success) {
@@ -177,7 +205,7 @@ export default function PostDetail() {
         <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-wrap">
           {post.content}
         </div>
-        
+
         {/* 좋아요 버튼 */}
         <div className="mt-6">
           <div className="flex items-center gap-4">
@@ -194,7 +222,7 @@ export default function PostDetail() {
               <span className="font-semibold">{likesCount}</span>
             </button>
           </div>
-          
+
           {/* 좋아요 누른 사람들 */}
           {post.likes && post.likes.length > 0 && (
             <p className="text-sm text-gray-500 mt-2">
@@ -286,36 +314,56 @@ export default function PostDetail() {
               첫 댓글을 작성해보세요!
             </p>
           ) : (
-            comments.map((comment) => (
-              <div
-                key={comment._id}
-                className="border-b border-gray-200 pb-4 last:border-0"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-semibold text-gray-800">
-                        {comment.author?.name || comment.author?.email}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {new Date(comment.createdAt).toLocaleString("ko-KR")}
-                      </span>
+            comments.map((comment) => {
+              // 현재 사용자가 이 댓글에 좋아요를 눴는지 판별
+              const isCommentLiked =
+                currentUser && comment.likes?.includes(currentUser.id);
+              return (
+                <div
+                  key={comment._id}
+                  className="border-b border-gray-200 pb-4 last:border-0"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-semibold text-gray-800">
+                          {comment.author?.name || comment.author?.email}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {new Date(comment.createdAt).toLocaleString("ko-KR")}
+                        </span>
+                      </div>
+                      <p className="text-gray-700 whitespace-pre-wrap">
+                        {comment.content}
+                      </p>
+                      {/* 댓글 좋아요 버튼 */}
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          onClick={() => handleCommentLike(comment._id)}
+                          className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-all duration-150
+                            ${
+                              isCommentLiked
+                                ? "bg-pink-100 text-pink-600"
+                                : "bg-gray-100 text-gray-500"
+                            }
+                          `}
+                        >
+                          {isCommentLiked ? "❤️" : "🤍"} {comment.likes.length}
+                        </button>
+                      </div>
                     </div>
-                    <p className="text-gray-700 whitespace-pre-wrap">
-                      {comment.content}
-                    </p>
+                    {currentUser && currentUser.id === comment.author?._id && (
+                      <button
+                        onClick={() => handleCommentDelete(comment._id)}
+                        className="text-red-600 hover:text-red-800 text-sm ml-4"
+                      >
+                        삭제
+                      </button>
+                    )}
                   </div>
-                  {currentUser && currentUser.id === comment.author?._id && (
-                    <button
-                      onClick={() => handleCommentDelete(comment._id)}
-                      className="text-red-600 hover:text-red-800 text-sm ml-4"
-                    >
-                      삭제
-                    </button>
-                  )}
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

@@ -22,6 +22,20 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // 좋아요 누른 사용자들
+      required: true,
+    },
+  ],
+  dislikes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // 싫어요 누른 사용자들
+      required: true,
+    },
+  ],
 });
 
 // 최신 댓글이 위로 오도록 기본 정렬 설정

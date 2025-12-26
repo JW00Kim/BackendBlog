@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const API_URL =
+const API_URL2 =
   import.meta.env.VITE_API_URL || "https://backend-blog-snowy.vercel.app/api";
-const API_URL2 = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 console.log("🔧 API_URL:", API_URL);
 
@@ -173,6 +173,20 @@ export const likePost = async (postId) => {
   const token = localStorage.getItem("token");
   const response = await api.post(
     `/posts/${postId}/like`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const likeComment = async (commentId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.post(
+    `/comments/${commentId}/like`,
     {},
     {
       headers: {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPosts, deletePost } from "../api";
+import { getPosts, deletePost, likeComment } from "../api";
 
 function PostList() {
   const navigate = useNavigate();

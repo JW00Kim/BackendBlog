@@ -133,6 +133,54 @@ router.post("/posts/:postId/comments", authenticate, async (req, res) => {
   }
 });
 
+//@route Like Post /api/posts/:postId/like
+//@desc Like or Unlike a post
+//@access Private (로그인 필요)
+router.post("/posts/:postId/like", authenticate, async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    // 게시물 존재 확인
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "게시물을 찾을 수 없습니다",
+      });
+    }
+
+    const userId = req.user._id;
+
+    // 좋아요 여부 확인 및 토글
+    const isLiked = post.likes.includes(userId);
+    if (isLiked) {
+      post.likes.pull(userId); // 좋아요 취소
+    } else {
+      post.likes.push(userId); // 좋아요 추가
+    }
+
+    await post.save();
+
+    res.json({
+      success: true,
+      message: isLiked
+        ? "좋아요가 취소되었습니다"
+        : "게시물이 좋아요되었습니다",
+      data: {
+        likesCount: post.likes.length,
+        isLiked: !isLiked,
+      },
+    });
+  } catch (error) {
+    console.error("좋아요 처리 에러:", error);
+    res.status(500).json({
+      success: false,
+      message: "서버 오류가 발생했습니다",
+      error: error.message,
+    });
+  }
+});
+
 // @route   DELETE /api/comments/:id
 // @desc    댓글 삭제
 // @access  Private (본인만)
@@ -170,6 +218,34 @@ router.delete("/comments/:id", authenticate, async (req, res) => {
       message: "서버 오류가 발생했습니다",
       error: error.message,
     });
+  }
+});
+
+// @route   POST /api/comments/:id/like
+// @desc    댓글 좋아요/취소
+// @access  Private
+router.post("/comments/:id/like", authenticate, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      return res.status(404).json({ success: false, message: "댓글을 찾을 수 없습니다" });
+    }
+    const isLiked = comment.likes.includes(userId);
+    if (isLiked) {
+      comment.likes.pull(userId);
+    } else {
+      comment.likes.push(userId);
+    }
+    await comment.save();
+    res.json({
+      success: true,
+      message: isLiked ? "좋아요가 취소되었습니다" : "댓글에 좋아요를 눌렀습니다",
+      data: { likesCount: comment.likes.length, isLiked: !isLiked }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "서버 오류", error: error.message });
   }
 });
 
