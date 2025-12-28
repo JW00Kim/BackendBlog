@@ -80,6 +80,17 @@ router.post("/signup", async (req, res) => {
 // @access  Public
 router.post("/login", async (req, res) => {
   try {
+    console.log("🔐 로그인 요청:", { email: req.body.email });
+    
+    // JWT_SECRET 확인
+    if (!process.env.JWT_SECRET) {
+      console.error("❌ JWT_SECRET이 설정되지 않음");
+      return res.status(500).json({
+        success: false,
+        message: "서버 설정 오류 (JWT_SECRET)",
+      });
+    }
+
     const { email, password } = req.body; // 클라이언트 에서 보낸 데이터
 
     // 필수 필드 체크
@@ -93,6 +104,7 @@ router.post("/login", async (req, res) => {
     // 사용자 찾기 (비밀번호 포함)
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
+      console.log("❌ 사용자를 찾을 수 없음:", email);
       return res.status(401).json({
         success: false,
         message: "이메일 또는 비밀번호가 잘못되었습니다",
@@ -102,6 +114,7 @@ router.post("/login", async (req, res) => {
     // 비밀번호 확인
     const isPasswordMatch = await user.matchPassword(password);
     if (!isPasswordMatch) {
+      console.log("❌ 비밀번호 불일치:", email);
       return res.status(401).json({
         success: false,
         message: "이메일 또는 비밀번호가 잘못되었습니다",
@@ -120,6 +133,7 @@ router.post("/login", async (req, res) => {
 
     // JWT 토큰 생성
     const token = generateToken(user._id);
+    console.log("✅ 로그인 성공:", email);
 
     res.json({
       success: true,
@@ -135,11 +149,13 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("로그인 에러:", error);
+    console.error("❌ 로그인 에러 상세:", error);
+    console.error("Stack:", error.stack);
     res.status(500).json({
       success: false,
       message: "서버 오류가 발생했습니다",
       error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   }
 });
