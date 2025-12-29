@@ -1,11 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend</title>
-    <!-- Google Sign-In SDK -->
+
+    <!-- 
+      🔐 Google Sign-In SDK 로드
+      - Google OAuth 2.0 로그인 기능을 위한 공식 라이브러리
+      - async: 비동기 로드로 페이지 로딩 속도 영향 최소화
+      - defer: HTML 파싱 완료 후 스크립트 실행
+      - 전역 객체: window.google.accounts.id
+    -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>

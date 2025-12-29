@@ -1,16 +1,37 @@
+// ============================================================
+// 📡 API 설정 및 Axios 인스턴스
+// ============================================================
 import axios from "axios";
 
+// ============================================================
+// 🌐 API 기본 URL 설정
+// ============================================================
+/**
+ * 환경별 API URL 자동 선택:
+ * - Production: .env.production의 VITE_API_URL 사용
+ * - Development: .env의 VITE_API_URL 또는 기본값(localhost:3001)
+ * 
+ * 주의: /api를 포함하지 않음! (axios baseURL에서 추가)
+ */
 const API_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 console.log("🔧 API_URL:", API_URL);
 
-// API 인스턴스 생성
+// ============================================================
+// ⚙️ Axios 인스턴스 생성 및 기본 설정
+// ============================================================
+/**
+ * 모든 API 요청에 사용되는 axios 인스턴스
+ * - baseURL: 모든 요청의 기본 URL (API_URL + /api)
+ * - timeout: 요청 제한 시간 (30초)
+ * - headers: 기본 헤더 설정
+ */
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: `${API_URL}/api`, // 예: http://localhost:3001/api
   timeout: 30000, // 30초 타임아웃
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json", // JSON 요청/응답
   },
 });
 

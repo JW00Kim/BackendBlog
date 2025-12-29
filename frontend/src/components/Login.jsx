@@ -8,53 +8,77 @@ function Login() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ============================================================
+  // 🔐 Google Sign-In 초기화 (컴포넌트 마운트 시 1회 실행)
+  // ============================================================
   useEffect(() => {
-    // Google Sign-In 초기화
+    // Google SDK가 로드되었는지 확인
     if (window.google) {
+      // 1️⃣ Google Sign-In 초기화
       window.google.accounts.id.initialize({
         client_id: "470258271536-me011cja3u0uiukn9fkrtp1cqk7is0jm.apps.googleusercontent.com",
-        callback: handleGoogleLogin,
+        callback: handleGoogleLogin, // 로그인 성공 시 호출될 콜백 함수
       });
 
-      // Google 버튼 렌더링
+      // 2️⃣ Google 로그인 버튼 렌더링
+      // #googleSignInButton 요소에 버튼을 자동으로 생성
       window.google.accounts.id.renderButton(
-        document.getElementById("googleSignInButton"),
+        document.getElementById("googleSignInButton"), // 버튼이 표시될 DOM 요소
         {
-          theme: "outline",
-          size: "large",
-          text: "signin_with",
-          width: 400,
+          theme: "outline",        // 버튼 테마 (outline/filled_blue/filled_black)
+          size: "large",           // 버튼 크기 (small/medium/large)
+          text: "signin_with",     // 버튼 텍스트 ("Google로 로그인")
+          width: 400,              // 버튼 너비 (px)
         }
       );
     }
-  }, []);
+  }, []); // 빈 배열 = 컴포넌트 마운트 시 1회만 실행
 
+  // ============================================================
+  // 🔑 Google 로그인 처리 함수
+  // ============================================================
+  /**
+   * Google Sign-In 버튼 클릭 시 자동으로 호출됩니다.
+   * @param {Object} response - Google에서 반환한 응답 객체
+   * @param {string} response.credential - Google ID Token (JWT 형식)
+   */
   const handleGoogleLogin = async (response) => {
     try {
       setLoading(true);
       setMessage("");
 
+      // 1️⃣ 환경 변수에서 API URL 가져오기
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+      
+      // 2️⃣ 백엔드 /api/auth/google 엔드포인트로 credential 전송
       const result = await fetch(`${apiUrl}/api/auth/google`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ credential: response.credential }),
+        body: JSON.stringify({ 
+          credential: response.credential // Google ID Token 전송
+        }),
       });
 
+      // 3️⃣ 백엔드 응답 파싱
       const data = await result.json();
 
       if (data.success) {
-        // 토큰 저장
-        localStorage.setItem("token", data.data.token);
-        localStorage.setItem("user", JSON.stringify(data.data.user));
+        // 4️⃣ 로그인 성공 - 토큰과 사용자 정보 저장
+        localStorage.setItem("token", data.data.token); // JWT 토큰 저장
+        localStorage.setItem("user", JSON.stringify(data.data.user)); // 사용자 정보 저장
+        
         setMessage("Google 로그인 성공!");
+        
+        // 5️⃣ 대시보드로 리다이렉트
         setTimeout(() => navigate("/dashboard"), 500);
       } else {
+        // 로그인 실패
         setMessage(data.message || "Google 로그인 실패");
       }
     } catch (error) {
+      // 네트워크 오류 등
       console.error("Google 로그인 에러:", error);
       setMessage("Google 로그인 중 오류가 발생했습니다");
     } finally {
