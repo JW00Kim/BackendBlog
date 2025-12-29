@@ -1,7 +1,11 @@
 const express = require("express"); // 익스프레스 라우터 불러오기
 const router = express.Router(); // 라우터 생성
 const jwt = require("jsonwebtoken"); // JWT 토큰 생성을 위한 라이브러리
+const { OAuth2Client } = require("google-auth-library"); // Google OAuth 클라이언트
 const User = require("../models/User"); // 사용자 모델 불러오기
+
+// Google OAuth 클라이언트 초기화
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // JWT 토큰 생성 함수
 const generateToken = (userId) => {
@@ -80,17 +84,6 @@ router.post("/signup", async (req, res) => {
 // @access  Public
 router.post("/login", async (req, res) => {
   try {
-    console.log("🔐 로그인 요청:", { email: req.body.email });
-    
-    // JWT_SECRET 확인
-    if (!process.env.JWT_SECRET) {
-      console.error("❌ JWT_SECRET이 설정되지 않음");
-      return res.status(500).json({
-        success: false,
-        message: "서버 설정 오류 (JWT_SECRET)",
-      });
-    }
-
     const { email, password } = req.body; // 클라이언트 에서 보낸 데이터
 
     // 필수 필드 체크
@@ -104,7 +97,6 @@ router.post("/login", async (req, res) => {
     // 사용자 찾기 (비밀번호 포함)
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      console.log("❌ 사용자를 찾을 수 없음:", email);
       return res.status(401).json({
         success: false,
         message: "이메일 또는 비밀번호가 잘못되었습니다",
@@ -114,7 +106,6 @@ router.post("/login", async (req, res) => {
     // 비밀번호 확인
     const isPasswordMatch = await user.matchPassword(password);
     if (!isPasswordMatch) {
-      console.log("❌ 비밀번호 불일치:", email);
       return res.status(401).json({
         success: false,
         message: "이메일 또는 비밀번호가 잘못되었습니다",
@@ -133,7 +124,6 @@ router.post("/login", async (req, res) => {
 
     // JWT 토큰 생성
     const token = generateToken(user._id);
-    console.log("✅ 로그인 성공:", email);
 
     res.json({
       success: true,
@@ -149,13 +139,11 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ 로그인 에러 상세:", error);
-    console.error("Stack:", error.stack);
+    console.error("로그인 에러:", error);
     res.status(500).json({
       success: false,
       message: "서버 오류가 발생했습니다",
       error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   }
 });
@@ -202,6 +190,83 @@ router.get("/me", async (req, res) => {
     res.status(401).json({
       success: false,
       message: "유효하지 않은 토큰입니다",
+      error: error.message,
+    });
+  }
+});
+
+// @route   POST /api/auth/google
+// @desc    Google OAuth 로그인
+// @access  Public
+router.post("/google", async (req, res) => {
+  try {
+    const { credential } = req.body;
+    
+    console.log("🔐 Google 로그인 요청");
+
+    if (!credential) {
+      return res.status(400).json({
+        success: false,
+        message: "Google 인증 토큰이 필요합니다",
+      });
+    }
+
+    // Google 토큰 검증
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, sub: googleId, picture } = payload;
+
+    console.log("✅ Google 토큰 검증 완료:", email);
+
+    // 기존 사용자 확인
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // 새 사용자 생성
+      user = await User.create({
+        email,
+        name,
+        password: Math.random().toString(36).slice(-8) + "Aa1!",
+        googleId,
+        profilePicture: picture,
+      });
+      console.log("✅ 새 Google 사용자 생성:", email);
+    } else {
+      // 기존 사용자 Google ID 업데이트
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.profilePicture = picture;
+        await user.save();
+      }
+      console.log("✅ 기존 사용자 Google 로그인:", email);
+    }
+
+    // JWT 토큰 생성
+    const token = generateToken(user._id);
+
+    res.json({
+      success: true,
+      message: "Google 로그인 성공",
+      data: {
+        user: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          profilePicture: user.profilePicture,
+          createdAt: user.createdAt,
+        },
+        token,
+      },
+    });
+  } catch (error) {
+    console.error("❌ Google 로그인 에러:", error);
+    res.status(500).json({
+      success: false,
+      message: "Google 로그인 실패",
       error: error.message,
     });
   }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api";
 
@@ -7,6 +7,60 @@ function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Google Sign-In 초기화
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: "470258271536-me011cja3u0uiukn9fkrtp1cqk7is0jm.apps.googleusercontent.com",
+        callback: handleGoogleLogin,
+      });
+
+      // Google 버튼 렌더링
+      window.google.accounts.id.renderButton(
+        document.getElementById("googleSignInButton"),
+        {
+          theme: "outline",
+          size: "large",
+          text: "signin_with",
+          width: 400,
+        }
+      );
+    }
+  }, []);
+
+  const handleGoogleLogin = async (response) => {
+    try {
+      setLoading(true);
+      setMessage("");
+
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+      const result = await fetch(`${apiUrl}/api/auth/google`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ credential: response.credential }),
+      });
+
+      const data = await result.json();
+
+      if (data.success) {
+        // 토큰 저장
+        localStorage.setItem("token", data.data.token);
+        localStorage.setItem("user", JSON.stringify(data.data.user));
+        setMessage("Google 로그인 성공!");
+        setTimeout(() => navigate("/dashboard"), 500);
+      } else {
+        setMessage(data.message || "Google 로그인 실패");
+      }
+    } catch (error) {
+      console.error("Google 로그인 에러:", error);
+      setMessage("Google 로그인 중 오류가 발생했습니다");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -86,6 +140,18 @@ function Login() {
           {loading ? "처리중..." : "로그인"}
         </button>
       </form>
+
+      {/* Google 로그인 구분선 */}
+      <div className="mt-6 mb-6 flex items-center">
+        <div className="flex-1 border-t border-gray-300"></div>
+        <span className="px-4 text-gray-500 text-sm">또는</span>
+        <div className="flex-1 border-t border-gray-300"></div>
+      </div>
+
+      {/* Google 로그인 버튼 */}
+      <div className="flex justify-center">
+        <div id="googleSignInButton"></div>
+      </div>
 
       <div className="mt-6 text-center">
         <button

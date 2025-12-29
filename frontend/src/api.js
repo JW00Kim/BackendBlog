@@ -1,14 +1,13 @@
 import axios from "axios";
 
 const API_URL =
-  import.meta.env.VITE_API_URL || "https://backend-blog-snowy.vercel.app/api";
-const API_URL2 = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 console.log("🔧 API_URL:", API_URL);
 
 // API 인스턴스 생성
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`,
   timeout: 30000, // 30초 타임아웃
   headers: {
     "Content-Type": "application/json",
@@ -135,9 +134,20 @@ export const deletePost = async (id) => {
   return response.data;
 };
 
+// 게시물 좋아요
+export const likePost = async (postId) => {
+  const token = localStorage.getItem("token");
+  const response = await api.post(`/posts/${postId}/like`, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 // ===== Comments API =====
 
-// 특정 게시물의 댓글 목록 가져오기
+// 댓글 가져오기
 export const getComments = async (postId) => {
   const response = await api.get(`/posts/${postId}/comments`);
   return response.data;
@@ -146,22 +156,7 @@ export const getComments = async (postId) => {
 // 댓글 작성
 export const createComment = async (postId, content) => {
   const token = localStorage.getItem("token");
-  const response = await api.post(
-    `/posts/${postId}/comments`,
-    { content },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return response.data;
-};
-
-// 댓글 삭제
-export const deleteComment = async (commentId) => {
-  const token = localStorage.getItem("token");
-  const response = await api.delete(`/comments/${commentId}`, {
+  const response = await api.post(`/posts/${postId}/comments`, { content }, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -169,31 +164,25 @@ export const deleteComment = async (commentId) => {
   return response.data;
 };
 
-export const likePost = async (postId) => {
+// 댓글 삭제
+export const deleteComment = async (postId, commentId) => {
   const token = localStorage.getItem("token");
-  const response = await api.post(
-    `/posts/${postId}/like`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await api.delete(`/posts/${postId}/comments/${commentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
-export const likeComment = async (commentId) => {
+// 댓글 좋아요
+export const likeComment = async (postId, commentId) => {
   const token = localStorage.getItem("token");
-  const response = await api.post(
-    `/comments/${commentId}/like`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await api.post(`/posts/${postId}/comments/${commentId}/like`, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
