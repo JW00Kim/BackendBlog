@@ -85,25 +85,35 @@ router.post("/", upload.array("images", 5), async (req, res) => {
     let images = [];
 
     if (req.files?.length) {
-      if (isCloudinaryConfigured()) {
-        images = await Promise.all(
-          req.files.map(async (file) => {
-            const result = await uploadImageBuffer(file.buffer, {
-              folder: "blog-posts",
-            });
-            return result.secure_url;
-          })
-        );
-      } else if (process.env.NODE_ENV !== "production") {
-        // 로컬 개발 환경에서는 uploads 폴더에 저장
-        images = await Promise.all(req.files.map(saveToLocalUploads));
-      } else {
+      console.log(`📤 ${req.files.length}개 파일 업로드 시작:`, {
+        CLOUDINARY_CONFIGURED: isCloudinaryConfigured(),
+        NODE_ENV: process.env.NODE_ENV,
+        CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? "있음" : "없음",
+      });
+
+      if (!isCloudinaryConfigured()) {
         return res.status(500).json({
           success: false,
-          message:
-            "Cloudinary 환경변수가 설정되지 않아 이미지 업로드를 처리할 수 없습니다.",
+          message: "Cloudinary 환경변수가 설정되지 않았습니다",
+          details: {
+            CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? "있음" : "없음",
+            CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ? "있음" : "없음",
+            CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ? "있음" : "없음",
+          },
         });
       }
+
+      images = await Promise.all(
+        req.files.map(async (file) => {
+          console.log(`  업로드 중: ${file.originalname} (${file.size} bytes)`);
+          const result = await uploadImageBuffer(file.buffer, {
+            folder: "blog-posts",
+          });
+          console.log(`  ✅ 완료: ${result.secure_url}`);
+          return result.secure_url;
+        })
+      );
+      console.log(`✅ 모든 파일 업로드 완료`);
     }
 
     const post = await Post.create({
