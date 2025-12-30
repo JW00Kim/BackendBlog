@@ -24,10 +24,13 @@ const connectDB = async () => {
 
     if (process.env.MONGODB_URI) {
       await mongoose.connect(process.env.MONGODB_URI, {
-        serverSelectionTimeoutMS: 30000, // 30초로 증가
-        socketTimeoutMS: 45000, // 45초로 증가
-        maxPoolSize: 10,
-        minPoolSize: 2,
+        serverSelectionTimeoutMS: 60000, // 60초 (Vercel 콜드 스타트 대비)
+        socketTimeoutMS: 60000, // 60초
+        maxPoolSize: 20, // 동시 연결 증가
+        minPoolSize: 5, // 최소 연결 증가
+        connectTimeoutMS: 30000,
+        retryWrites: true,
+        retryReads: true,
       });
       isConnected = true;
       console.log("✅ MongoDB 연결 성공");
