@@ -2,12 +2,8 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
-const User = require("../models/User");
 const { uploadImageBuffer } = require("../lib/cloudinary");
 const parseFormData = require("../middleware/parseFormData");
-const fs = require("fs/promises");
-const path = require("path");
-const crypto = require("crypto");
 
 const isCloudinaryConfigured = () => {
   return Boolean(
@@ -15,34 +11,6 @@ const isCloudinaryConfigured = () => {
       process.env.CLOUDINARY_API_KEY &&
       process.env.CLOUDINARY_API_SECRET
   );
-};
-
-const mimeToExt = (mime) => {
-  switch (mime) {
-    case "image/jpeg":
-    case "image/jpg":
-      return ".jpg";
-    case "image/png":
-      return ".png";
-    case "image/gif":
-      return ".gif";
-    case "image/webp":
-      return ".webp";
-    default:
-      return "";
-  }
-};
-
-const saveToLocalUploads = async (file) => {
-  const uploadsDir = path.join(__dirname, "..", "uploads");
-  await fs.mkdir(uploadsDir, { recursive: true });
-
-  const originalExt = path.extname(file.originalname || "");
-  const ext = originalExt || mimeToExt(file.mimetype) || ".bin";
-  const filename = `${Date.now()}-${crypto.randomBytes(8).toString("hex")}${ext}`;
-
-  await fs.writeFile(path.join(uploadsDir, filename), file.buffer);
-  return `/uploads/${filename}`;
 };
 
 // @route   POST /api/posts

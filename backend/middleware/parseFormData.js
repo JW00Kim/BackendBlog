@@ -53,9 +53,6 @@ function parseFormData(req, res, next) {
         buffer,
       });
       filesProcessed++;
-      console.log(
-        `✅ File processed: ${info.filename} (${filesProcessed}/${fileCount})`
-      );
     });
 
     file.on("error", (err) => {
@@ -65,21 +62,15 @@ function parseFormData(req, res, next) {
   });
 
   bb.on("field", (fieldname, val) => {
-    console.log(`📝 Field: ${fieldname} = ${val}`);
     req.body[fieldname] = val;
   });
 
   bb.on("close", () => {
-    console.log(
-      `✅ Busboy close event: ${filesProcessed}/${fileCount} files ready`
-    );
     // 모든 파일이 처리될 때까지 대기
     if (filesProcessed < fileCount) {
-      console.log("⏳ Waiting for remaining files to be processed...");
       const waitInterval = setInterval(() => {
         if (filesProcessed >= fileCount) {
           clearInterval(waitInterval);
-          console.log("✅ Form data parsing complete");
           if (!isResponseSent) {
             isResponseSent = true;
             next();
@@ -89,18 +80,12 @@ function parseFormData(req, res, next) {
       // 안전장치: 최대 5초 대기
       setTimeout(() => {
         clearInterval(waitInterval);
-        if (filesProcessed < fileCount) {
-          console.warn(
-            `⚠️  Timeout: only ${filesProcessed}/${fileCount} files ready`
-          );
-        }
         if (!isResponseSent) {
           isResponseSent = true;
           next();
         }
       }, 5000);
     } else {
-      console.log("✅ Form data parsing complete");
       if (!isResponseSent) {
         isResponseSent = true;
         next();
