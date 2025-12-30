@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
+const User = require("../models/User");
 const { uploadImageBuffer } = require("../lib/cloudinary");
 const parseFormData = require("../middleware/parseFormData");
 
