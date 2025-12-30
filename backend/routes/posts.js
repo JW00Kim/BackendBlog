@@ -3,8 +3,8 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
 const User = require("../models/User");
-const upload = require("../middleware/upload");
 const { uploadImageBuffer } = require("../lib/cloudinary");
+const parseFormData = require("../middleware/parseFormData");
 const fs = require("fs/promises");
 const path = require("path");
 const crypto = require("crypto");
@@ -48,7 +48,7 @@ const saveToLocalUploads = async (file) => {
 // @route   POST /api/posts
 // @desc    게시물 작성 (이미지 업로드 포함)
 // @access  Private
-router.post("/", upload.array("images", 5), async (req, res) => {
+router.post("/", parseFormData, async (req, res) => {
   // 인증 체크
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
