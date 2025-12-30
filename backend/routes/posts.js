@@ -300,10 +300,17 @@ router.delete("/:id", async (req, res) => {
 
     req.user = user;
   } catch (error) {
-    console.error("인증 에러:", error);
+    console.error("❌ DELETE 인증 에러:", {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+      tokenLength: token?.length,
+      jwtSecretSet: !!process.env.JWT_SECRET,
+    });
     return res.status(401).json({
       success: false,
       message: "유효하지 않은 토큰입니다",
+      error: error.message,
     });
   }
   try {
