@@ -119,11 +119,16 @@ router.post("/", upload.array("images", 5), async (req, res) => {
       data: { post },
     });
   } catch (error) {
-    console.error("게시물 작성 에러:", error.stack);
+    console.error("❌ 게시물 작성 에러:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
     res.status(500).json({
       success: false,
       message: "서버 오류가 발생했습니다",
       error: error.message,
+      details: process.env.NODE_ENV === "production" ? undefined : error.stack,
     });
   }
 });
