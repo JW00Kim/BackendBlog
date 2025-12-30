@@ -29,17 +29,37 @@ function uploadImageBuffer(buffer, options = {}) {
   const uploadOptions = {
     folder: options.folder || "blog-posts",
     resource_type: "image",
+    timeout: 35000, // 35초 타임아웃
     ...options,
   };
 
   return new Promise((resolve, reject) => {
+    const timeoutHandle = setTimeout(() => {
+      reject(new Error("Cloudinary upload timeout (35s)"));
+    }, 35000);
+
     const stream = cloudinary.uploader.upload_stream(
       uploadOptions,
       (error, result) => {
-        if (error) return reject(error);
+        clearTimeout(timeoutHandle);
+        if (error) {
+          console.error("❌ Cloudinary upload error:", {
+            message: error.message,
+            statusCode: error.status,
+            errorCode: error.http_code,
+          });
+          return reject(error);
+        }
+        console.log("✅ Cloudinary upload success:", result.secure_url);
         resolve(result);
       }
     );
+
+    stream.on("error", (err) => {
+      clearTimeout(timeoutHandle);
+      console.error("❌ Cloudinary stream error:", err);
+      reject(err);
+    });
 
     stream.end(buffer);
   });

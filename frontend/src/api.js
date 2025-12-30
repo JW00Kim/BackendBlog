@@ -57,12 +57,15 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error("❌ API 에러:", {
+    const errorData = {
       message: error.message,
-      response: error.response?.data,
       status: error.response?.status,
+      statusText: error.response?.statusText,
       url: error.config?.url,
-    });
+      method: error.config?.method?.toUpperCase(),
+      fullResponse: error.response?.data,
+    };
+    console.error("❌ API 에러 상세:", JSON.stringify(errorData, null, 2));
     return Promise.reject(error);
   }
 );
