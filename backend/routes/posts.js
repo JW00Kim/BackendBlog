@@ -74,6 +74,13 @@ router.post("/", parseFormData, async (req, res) => {
   try {
     const { title, content } = req.body;
 
+    console.log("📝 요청 데이터:", {
+      title,
+      content,
+      filesCount: req.files?.length || 0,
+      bodyKeys: Object.keys(req.body),
+    });
+
     if (!title || !content) {
       return res.status(400).json({
         success: false,
@@ -89,6 +96,7 @@ router.post("/", parseFormData, async (req, res) => {
         CLOUDINARY_CONFIGURED: isCloudinaryConfigured(),
         NODE_ENV: process.env.NODE_ENV,
         CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? "있음" : "없음",
+        files: req.files.map((f) => ({ name: f.originalname, size: f.size })),
       });
 
       if (!isCloudinaryConfigured()) {

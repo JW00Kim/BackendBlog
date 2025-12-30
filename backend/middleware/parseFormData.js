@@ -22,6 +22,8 @@ function parseFormData(req, res, next) {
   req.body = {};
   req.files = [];
 
+  let isResponseSent = false;
+
   const bb = busboy({
     headers: req.headers,
     limits: {
@@ -51,15 +53,19 @@ function parseFormData(req, res, next) {
         buffer,
       });
       filesProcessed++;
-      console.log(`✅ File processed: ${info.filename} (${filesProcessed}/${fileCount})`);
+      console.log(
+        `✅ File processed: ${info.filename} (${filesProcessed}/${fileCount})`
+      );
     });
 
     file.on("error", (err) => {
-      console.error("❌ File parse error:", err);
+      console.error("❌ File stream error:", err);
+      filesProcessed++;
     });
   });
 
   bb.on("field", (fieldname, val) => {
+    console.log(`📝 Field: ${fieldname} = ${val}`);
     req.body[fieldname] = val;
   });
 
@@ -69,14 +75,15 @@ function parseFormData(req, res, next) {
     );
     // 모든 파일이 처리될 때까지 대기
     if (filesProcessed < fileCount) {
-      console.log(
-        "⏳ Waiting for remaining files to be processed..."
-      );
+      console.log("⏳ Waiting for remaining files to be processed...");
       const waitInterval = setInterval(() => {
         if (filesProcessed >= fileCount) {
           clearInterval(waitInterval);
           console.log("✅ Form data parsing complete");
-          next();
+          if (!isResponseSent) {
+            isResponseSent = true;
+            next();
+          }
         }
       }, 10);
       // 안전장치: 최대 5초 대기
@@ -87,21 +94,42 @@ function parseFormData(req, res, next) {
             `⚠️  Timeout: only ${filesProcessed}/${fileCount} files ready`
           );
         }
-        next();
+        if (!isResponseSent) {
+          isResponseSent = true;
+          next();
+        }
       }, 5000);
     } else {
       console.log("✅ Form data parsing complete");
-      next();
+      if (!isResponseSent) {
+        isResponseSent = true;
+        next();
+      }
     }
   });
 
   bb.on("error", (err) => {
     console.error("❌ Busboy error:", err);
-    return res.status(400).json({
-      success: false,
-      code: "FORM_PARSE_ERROR",
-      message: err.message,
-    });
+    if (!isResponseSent) {
+      isResponseSent = true;
+      return res.status(400).json({
+        success: false,
+        code: "FORM_PARSE_ERROR",
+        message: err.message,
+      });
+    }
+  });
+
+  req.on("error", (err) => {
+    console.error("❌ Request stream error:", err);
+    if (!isResponseSent) {
+      isResponseSent = true;
+      return res.status(400).json({
+        success: false,
+        code: "REQUEST_STREAM_ERROR",
+        message: err.message,
+      });
+    }
   });
 
   req.pipe(bb);
