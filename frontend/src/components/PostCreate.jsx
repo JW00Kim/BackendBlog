@@ -8,6 +8,8 @@ function PostCreate() {
     title: "",
     content: "",
   });
+  const [images, setImages] = useState([]); // 선택된 이미지 파일
+  const [imagePreviews, setImagePreviews] = useState([]); // 미리보기 URL
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -16,6 +18,43 @@ function PostCreate() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  // 이미지 선택 핸들러
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    
+    // 5개 제한
+    if (files.length + images.length > 5) {
+      setError("이미지는 최대 5개까지 업로드 가능합니다.");
+      return;
+    }
+
+    // 파일 크기 체크 (5MB)
+    const oversizedFiles = files.filter((file) => file.size > 5 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      setError("이미지는 5MB 이하만 업로드 가능합니다.");
+      return;
+    }
+
+    setError("");
+    setImages([...images, ...files]);
+
+    // 미리보기 생성
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews([...imagePreviews, ...newPreviews]);
+  };
+
+  // 이미지 삭제
+  const handleRemoveImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    
+    // 메모리 해제
+    URL.revokeObjectURL(imagePreviews[index]);
+    
+    setImages(newImages);
+    setImagePreviews(newPreviews);
   };
 
   const handleSubmit = async (e) => {
@@ -29,9 +68,22 @@ function PostCreate() {
 
     try {
       setLoading(true);
-      const data = await createPost(formData);
+      
+      // FormData 생성
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("content", formData.content);
+      
+      // 이미지 추가
+      images.forEach((image) => {
+        data.append("images", image);
+      });
 
-      if (data.success) {
+      const result = await createPost(data);
+
+      if (result.success) {
+        // 메모리 해제
+        imagePreviews.forEach((url) => URL.revokeObjectURL(url));
         navigate("/posts");
       }
     } catch (err) {
@@ -91,6 +143,51 @@ function PostCreate() {
               rows={12}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
+          </div>
+
+          {/* 이미지 업로드 */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              이미지 ({images.length}/5)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
+              className="hidden"
+              id="image-upload"
+            />
+            <label
+              htmlFor="image-upload"
+              className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
+            >
+              <span className="text-gray-600">
+                📷 이미지 선택 (최대 5개, 각 5MB 이하)
+              </span>
+            </label>
+
+            {/* 이미지 미리보기 */}
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={preview}
+                      alt={`미리보기 ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex space-x-3">

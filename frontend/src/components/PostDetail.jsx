@@ -202,6 +202,31 @@ export default function PostDetail() {
           By {post.author?.name || post.author?.email || "Unknown"} on{" "}
           {new Date(post.createdAt).toLocaleDateString()}
         </p>
+
+        {/* 이미지 표시 */}
+        {post.images && post.images.length > 0 && (
+          <div className="mb-6">
+            {post.images.length === 1 ? (
+              <img
+                src={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}${post.images[0]}`}
+                alt="게시물 이미지"
+                className="w-full rounded-lg"
+              />
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {post.images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}${image}`}
+                    alt={`게시물 이미지 ${index + 1}`}
+                    className="w-full h-48 object-cover rounded-lg"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-wrap">
           {post.content}
         </div>
@@ -246,13 +271,12 @@ export default function PostDetail() {
           </button>
           <button
             onClick={async () => {
-              if (confirm("Are you sure you want to delete this post?")) {
-                try {
-                  await deletePost(post._id);
-                  navigate("/posts");
-                } catch (err) {
-                  alert("Failed to delete post");
-                }
+              try {
+                await deletePost(post._id);
+                navigate("/posts");
+              } catch (err) {
+                console.error("삭제 실패:", err);
+                alert("게시물 삭제에 실패했습니다");
               }
             }}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"

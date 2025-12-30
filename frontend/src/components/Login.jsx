@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api";
+import { login, googleLogin } from "../api";
 
 function Login() {
   const navigate = useNavigate();
@@ -47,40 +47,20 @@ function Login() {
       setLoading(true);
       setMessage("");
 
-      // 1️⃣ 환경 변수에서 API URL 가져오기
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
-      
-      // 2️⃣ 백엔드 /api/auth/google 엔드포인트로 credential 전송
-      const result = await fetch(`${apiUrl}/api/auth/google`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          credential: response.credential // Google ID Token 전송
-        }),
-      });
+      // api.js의 googleLogin 함수 사용 (axios 인스턴스 활용)
+      const result = await googleLogin(response.credential);
 
-      // 3️⃣ 백엔드 응답 파싱
-      const data = await result.json();
-
-      if (data.success) {
-        // 4️⃣ 로그인 성공 - 토큰과 사용자 정보 저장
-        localStorage.setItem("token", data.data.token); // JWT 토큰 저장
-        localStorage.setItem("user", JSON.stringify(data.data.user)); // 사용자 정보 저장
-        
+      if (result.success) {
         setMessage("Google 로그인 성공!");
-        
-        // 5️⃣ 대시보드로 리다이렉트
         setTimeout(() => navigate("/dashboard"), 500);
       } else {
-        // 로그인 실패
-        setMessage(data.message || "Google 로그인 실패");
+        setMessage(result.message || "Google 로그인 실패");
       }
     } catch (error) {
-      // 네트워크 오류 등
       console.error("Google 로그인 에러:", error);
-      setMessage("Google 로그인 중 오류가 발생했습니다");
+      setMessage(
+        error.response?.data?.message || "Google 로그인 중 오류가 발생했습니다"
+      );
     } finally {
       setLoading(false);
     }

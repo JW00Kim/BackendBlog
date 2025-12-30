@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -38,6 +39,9 @@ const connectDB = async () => {
 // CORS - 모든 도메인 허용
 app.use(cors());
 app.use(express.json());
+
+// 정적 파일 제공 (업로드된 이미지)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB 연결 (앱 시작 시 한 번)
 connectDB();

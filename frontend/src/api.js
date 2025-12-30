@@ -30,9 +30,7 @@ console.log("🔧 API_URL:", API_URL);
 const api = axios.create({
   baseURL: `${API_URL}/api`, // 예: http://localhost:3001/api
   timeout: 30000, // 30초 타임아웃
-  headers: {
-    "Content-Type": "application/json", // JSON 요청/응답
-  },
+  // Content-Type은 요청마다 자동 설정 (JSON/FormData)
 });
 
 // 요청 인터셉터
@@ -89,6 +87,16 @@ export const login = async (credentials) => {
   return response.data;
 };
 
+// Google 로그인
+export const googleLogin = async (credential) => {
+  const response = await api.post("/auth/google", { credential });
+  if (response.data.success) {
+    localStorage.setItem("token", response.data.data.token);
+    localStorage.setItem("user", JSON.stringify(response.data.data.user));
+  }
+  return response.data;
+};
+
 // 로그아웃
 export const logout = () => {
   localStorage.removeItem("token");
@@ -125,9 +133,15 @@ export const getPost = async (id) => {
 // 게시물 작성
 export const createPost = async (postData) => {
   const token = localStorage.getItem("token");
+  
+  // FormData인 경우 Content-Type 자동 설정
+  const isFormData = postData instanceof FormData;
+  
   const response = await api.post("/posts", postData, {
     headers: {
       Authorization: `Bearer ${token}`,
+      // FormData는 브라우저가 자동으로 Content-Type 설정 (boundary 포함)
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
     },
   });
   return response.data;

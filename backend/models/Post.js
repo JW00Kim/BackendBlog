@@ -17,6 +17,11 @@ const postSchema = new mongoose.Schema({
     ref: "User", // User 모델 참조
     required: [true, "작성자가 필요합니다"],
   },
+  images: [
+    {
+      type: String, // 이미지 URL 저장
+    },
+  ],
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,

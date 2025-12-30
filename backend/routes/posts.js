@@ -3,11 +3,34 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
 const User = require("../models/User");
+const upload = require("../middleware/upload");
 
 // @route   POST /api/posts
-// @desc    게시물 작성
-// @access  Public (테스트용 - 인증 제거)
-router.post("/", async (req, res) => {
+// @desc    게시물 작성 (이미지 업로드 포함)
+// @access  Private
+router.post("/", upload.array("images", 5), async (req, res) => {
+  // 인증 체크
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      message: "로그인이 필요합니다",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+  let userId;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    userId = decoded.id;
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "유효하지 않은 토큰입니다",
+    });
+  }
+
   try {
     const { title, content } = req.body;
 
@@ -18,10 +41,16 @@ router.post("/", async (req, res) => {
       });
     }
 
+    // 업로드된 이미지 URL 생성
+    const images = req.files
+      ? req.files.map((file) => `/uploads/${file.filename}`)
+      : [];
+
     const post = await Post.create({
       title,
       content,
-      author: "69474f413ddedc3f0f26366e", // 기본 사용자 ID
+      images,
+      author: userId, // 로그인한 사용자 ID
     });
 
     res.status(201).json({

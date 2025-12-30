@@ -103,6 +103,15 @@ function PostList() {
                     className="cursor-pointer"
                     onClick={() => navigate(`/posts/${post._id}`)}
                   >
+                    {/* 이미지 썸네일 (첫 번째 이미지만) */}
+                    {post.images && post.images.length > 0 && (
+                      <img
+                        src={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}${post.images[0]}`}
+                        alt={post.title}
+                        className="w-full h-40 object-cover rounded-lg mb-3"
+                      />
+                    )}
+
                     <h2 className="text-lg font-bold text-gray-800 mb-2 hover:text-blue-600 transition">
                       {post.title}
                     </h2>
