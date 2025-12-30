@@ -273,6 +273,11 @@ router.delete("/:id", async (req, res) => {
   // 인증 체크
   const authHeader = req.headers.authorization;
 
+  console.log("🔐 DELETE 요청 토큰 확인:", {
+    authHeader: authHeader ? authHeader.substring(0, 30) + "..." : "없음",
+    jwtSecret: process.env.JWT_SECRET ? "설정됨" : "없음",
+  });
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
@@ -326,8 +331,23 @@ router.delete("/:id", async (req, res) => {
       message: "게시물이 삭제되었습니다",
     });
   } catch (error) {
-    console.error("게시물 삭제 에러:", error);
+    console.error("❌ DELETE 게시물 에러:", {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+    });
+    
+    // JWT 검증 실패
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "유효하지 않은 토큰입니다",
+        error: error.message,
+      });
+    }
+    
     res.status(500).json({
+
       success: false,
       message: "서버 오류가 발생했습니다",
       error: error.message,
