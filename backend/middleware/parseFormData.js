@@ -30,7 +30,11 @@ function parseFormData(req, res, next) {
     },
   });
 
+  let fileCount = 0;
+  let filesProcessed = 0;
+
   bb.on("file", (fieldname, file, info) => {
+    fileCount++;
     const chunks = [];
 
     file.on("data", (data) => {
@@ -46,6 +50,8 @@ function parseFormData(req, res, next) {
         size: buffer.length,
         buffer,
       });
+      filesProcessed++;
+      console.log(`✅ File processed: ${info.filename} (${filesProcessed}/${fileCount})`);
     });
 
     file.on("error", (err) => {
@@ -58,8 +64,35 @@ function parseFormData(req, res, next) {
   });
 
   bb.on("close", () => {
-    console.log("✅ Form data parsing complete");
-    next();
+    console.log(
+      `✅ Busboy close event: ${filesProcessed}/${fileCount} files ready`
+    );
+    // 모든 파일이 처리될 때까지 대기
+    if (filesProcessed < fileCount) {
+      console.log(
+        "⏳ Waiting for remaining files to be processed..."
+      );
+      const waitInterval = setInterval(() => {
+        if (filesProcessed >= fileCount) {
+          clearInterval(waitInterval);
+          console.log("✅ Form data parsing complete");
+          next();
+        }
+      }, 10);
+      // 안전장치: 최대 5초 대기
+      setTimeout(() => {
+        clearInterval(waitInterval);
+        if (filesProcessed < fileCount) {
+          console.warn(
+            `⚠️  Timeout: only ${filesProcessed}/${fileCount} files ready`
+          );
+        }
+        next();
+      }, 5000);
+    } else {
+      console.log("✅ Form data parsing complete");
+      next();
+    }
   });
 
   bb.on("error", (err) => {
