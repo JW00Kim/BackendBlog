@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const multer = require("multer");
 require("dotenv").config();
 
 const app = express();
@@ -76,6 +77,42 @@ app.use((req, res) => {
   res
     .status(404)
     .json({ success: false, error: "요청한 엔드포인트를 찾을 수 없습니다" });
+});
+
+// 에러 핸들링 (multer 포함)
+app.use((err, req, res, next) => {
+  if (!err) return next();
+
+  // Multer 에러 (파일 용량 초과 등)
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(413).json({
+        success: false,
+        message: "이미지 파일은 10MB 이하만 업로드 가능합니다.",
+      });
+    }
+
+    return res.status(400).json({
+      success: false,
+      message: `업로드 오류: ${err.code}`,
+    });
+  }
+
+  // 파일 필터 에러 (이미지 확장자 제한)
+  if (typeof err.message === "string" && err.message.includes("이미지 파일만")) {
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  console.error("❌ 서버 에러:", err);
+
+  return res.status(500).json({
+    success: false,
+    message: "서버 오류가 발생했습니다",
+    ...(process.env.NODE_ENV !== "production" ? { error: err.message } : {}),
+  });
 });
 
 // 로컬 개발 서버 실행 (Vercel에서는 실행 안됨)

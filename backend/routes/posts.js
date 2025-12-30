@@ -4,6 +4,46 @@ const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const upload = require("../middleware/upload");
+const { uploadImageBuffer } = require("../lib/cloudinary");
+const fs = require("fs/promises");
+const path = require("path");
+const crypto = require("crypto");
+
+const isCloudinaryConfigured = () => {
+  return Boolean(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+  );
+};
+
+const mimeToExt = (mime) => {
+  switch (mime) {
+    case "image/jpeg":
+    case "image/jpg":
+      return ".jpg";
+    case "image/png":
+      return ".png";
+    case "image/gif":
+      return ".gif";
+    case "image/webp":
+      return ".webp";
+    default:
+      return "";
+  }
+};
+
+const saveToLocalUploads = async (file) => {
+  const uploadsDir = path.join(__dirname, "..", "uploads");
+  await fs.mkdir(uploadsDir, { recursive: true });
+
+  const originalExt = path.extname(file.originalname || "");
+  const ext = originalExt || mimeToExt(file.mimetype) || ".bin";
+  const filename = `${Date.now()}-${crypto.randomBytes(8).toString("hex")}${ext}`;
+
+  await fs.writeFile(path.join(uploadsDir, filename), file.buffer);
+  return `/uploads/${filename}`;
+};
 
 // @route   POST /api/posts
 // @desc    게시물 작성 (이미지 업로드 포함)
@@ -42,9 +82,29 @@ router.post("/", upload.array("images", 5), async (req, res) => {
     }
 
     // 업로드된 이미지 URL 생성
-    const images = req.files
-      ? req.files.map((file) => `/uploads/${file.filename}`)
-      : [];
+    let images = [];
+
+    if (req.files?.length) {
+      if (isCloudinaryConfigured()) {
+        images = await Promise.all(
+          req.files.map(async (file) => {
+            const result = await uploadImageBuffer(file.buffer, {
+              folder: "blog-posts",
+            });
+            return result.secure_url;
+          })
+        );
+      } else if (process.env.NODE_ENV !== "production") {
+        // 로컬 개발 환경에서는 uploads 폴더에 저장
+        images = await Promise.all(req.files.map(saveToLocalUploads));
+      } else {
+        return res.status(500).json({
+          success: false,
+          message:
+            "Cloudinary 환경변수가 설정되지 않아 이미지 업로드를 처리할 수 없습니다.",
+        });
+      }
+    }
 
     const post = await Post.create({
       title,

@@ -13,6 +13,11 @@ import {
 export default function PostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  const resolveImageUrl = (imageUrl) =>
+    typeof imageUrl === "string" && imageUrl.startsWith("http")
+      ? imageUrl
+      : `${API_URL}${imageUrl}`;
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -208,7 +213,7 @@ export default function PostDetail() {
           <div className="mb-6">
             {post.images.length === 1 ? (
               <img
-                src={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}${post.images[0]}`}
+                src={resolveImageUrl(post.images[0])}
                 alt="게시물 이미지"
                 className="w-full rounded-lg"
               />
@@ -217,7 +222,7 @@ export default function PostDetail() {
                 {post.images.map((image, index) => (
                   <img
                     key={index}
-                    src={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}${image}`}
+                    src={resolveImageUrl(image)}
                     alt={`게시물 이미지 ${index + 1}`}
                     className="w-full h-48 object-cover rounded-lg"
                   />

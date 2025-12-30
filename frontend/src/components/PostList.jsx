@@ -4,6 +4,12 @@ import { getPosts, deletePost } from "../api";
 
 function PostList() {
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+  const resolveImageUrl = (imageUrl) =>
+    typeof imageUrl === "string" && imageUrl.startsWith("http")
+      ? imageUrl
+      : `${API_URL}${imageUrl}`;
+
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -106,7 +112,7 @@ function PostList() {
                     {/* 이미지 썸네일 (첫 번째 이미지만) */}
                     {post.images && post.images.length > 0 && (
                       <img
-                        src={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}${post.images[0]}`}
+                        src={resolveImageUrl(post.images[0])}
                         alt={post.title}
                         className="w-full h-40 object-cover rounded-lg mb-3"
                       />
