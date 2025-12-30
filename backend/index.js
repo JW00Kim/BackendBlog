@@ -24,8 +24,10 @@ const connectDB = async () => {
 
     if (process.env.MONGODB_URI) {
       await mongoose.connect(process.env.MONGODB_URI, {
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 10000,
+        serverSelectionTimeoutMS: 30000, // 30초로 증가
+        socketTimeoutMS: 45000, // 45초로 증가
+        maxPoolSize: 10,
+        minPoolSize: 2,
       });
       isConnected = true;
       console.log("✅ MongoDB 연결 성공");
