@@ -138,7 +138,15 @@ router.post("/", upload.array("images", 5), async (req, res) => {
       success: false,
       message: "서버 오류가 발생했습니다",
       error: error.message,
-      details: process.env.NODE_ENV === "production" ? undefined : error.stack,
+      errorCode: error.code,
+      details: {
+        CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? "있음" : "없음",
+        CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ? "있음" : "없음",
+        CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ? "있음" : "없음",
+        JWT_SECRET: process.env.JWT_SECRET ? "있음" : "없음",
+        MONGODB_URI: process.env.MONGODB_URI ? "있음" : "없음",
+        NODE_ENV: process.env.NODE_ENV,
+      },
     });
   }
 });
