@@ -8,6 +8,12 @@ function ensureConfigured() {
   const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
     process.env;
 
+  console.log("🔧 Cloudinary config:", {
+    CLOUD_NAME: CLOUDINARY_CLOUD_NAME,
+    API_KEY: CLOUDINARY_API_KEY ? "***" + CLOUDINARY_API_KEY.slice(-4) : "없음",
+    API_SECRET: CLOUDINARY_API_SECRET ? "***" : "없음",
+  });
+
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
     throw new Error(
       "Cloudinary 환경변수(CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET)가 설정되지 않았습니다"
@@ -20,6 +26,7 @@ function ensureConfigured() {
     api_secret: CLOUDINARY_API_SECRET,
   });
 
+  console.log("✅ Cloudinary configured successfully");
   configured = true;
 }
 
