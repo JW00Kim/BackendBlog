@@ -38,8 +38,17 @@ api.interceptors.request.use(
   (config) => {
     // 모든 요청에 Authorization 헤더 자동 추가
     const token = localStorage.getItem("token");
+    
+    console.log("🔐 토큰 확인:", {
+      tokenExists: !!token,
+      tokenPreview: token ? token.substring(0, 20) + "..." : "없음",
+    });
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log("✅ Authorization 헤더 설정됨");
+    } else {
+      console.log("⚠️  Authorization 헤더 미설정 (토큰 없음)");
     }
     
     console.log(
