@@ -36,6 +36,12 @@ const api = axios.create({
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
+    // 모든 요청에 Authorization 헤더 자동 추가
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
     console.log(
       "🔵 API 요청:",
       config.method.toUpperCase(),
@@ -163,12 +169,7 @@ export const updatePost = async (id, postData) => {
 
 // 게시물 삭제
 export const deletePost = async (id) => {
-  const token = localStorage.getItem("token");
-  const response = await api.delete(`/posts/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await api.delete(`/posts/${id}`);
   return response.data;
 };
 
@@ -204,12 +205,7 @@ export const createComment = async (postId, content) => {
 
 // 댓글 삭제
 export const deleteComment = async (postId, commentId) => {
-  const token = localStorage.getItem("token");
-  const response = await api.delete(`/posts/${postId}/comments/${commentId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await api.delete(`/posts/${postId}/comments/${commentId}`);
   return response.data;
 };
 
